@@ -1,0 +1,59 @@
+---
+title: 'Bibliometric Analysis of European Research on Digital Divide: An Exploration   of the Corporate Landscape'
+author: "Luis Carlos Castillo"
+date: "`r Sys.Date()`"
+output:
+  word_document: 
+    reference_docx: "template_prop.dotx"
+  html_document: default
+  pdf_document: default
+geometry: left = 2.54cm, right = 2.54cm, top = 2.54cm, bottom = 2.54cm
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(here)
+library(bibliometrix)
+library(devtools)
+library(readtext)
+library(tidyr)
+library(bib2df)
+library(readr)
+library(visdat)
+library(stringr)
+library(dplyr)
+library(bibtex)
+library(readxl)
+library(janitor)
+library(naniar)
+library(dimensionsR)
+
+```
+
+#### **Context:**
+
+The emergence of the so-called "digital divide" has brought adverse effects, especially on the actors in society who lack access, literacy, and fluency in digital technologies. Within the extant literature, the digital divide is triggered by different factors. For example, the generational gap, the income and wage disparities, the unbalance between rural and urban at the regional level, and the gap between emerging and developed economies, among others. The European Union has recently launched the Digital Europe program, accompanied by a battery of policies that will guide Europe's digital and technological future. Therefore, it is pertinent to understand the state of the art of the digital divide, identify the different factors that persist in the widening of the digital divide in Europe, and recognize the new actors in society and the economy to reconfigure and design adequate policies.
+
+#### **Purpose:**
+
+This bibliometric aims to examine the current state of the art of European research in the field of the digital divide by combining the Web of Science, Scopus, and Dimensions bibliographic platforms. Additionally, this work seeks to make an exploration of the corporate digital divide.
+
+```{r nrows, include=FALSE}
+MM <- read.csv(here("Data", "Processed", "M_EU.csv"))
+docs <- nrow(MM)
+
+```
+
+#### **Design/Methodology/Approach:**
+
+This investigation will conduct a bibliometric analysis by merging three databases (Web of Science, Scopus, and Dimensions), limiting the search to authors with European affiliations within the business, management, economics, technology, and computer science disciplines. A total of `r nrow(MM)` documents, including articles, book chapters, conferences, and proceedings, were found in the three bibliographical sources. The results will be obtained by operating the R programming language using the bibliometrics package and the biblioshiny application.
+
+#### **Originality Value:**
+
+The novelty of this study relies on a more comprehensive bibliographical data range on the digital divide by merging the Web of Science, Scopus, and Dimensions databases to explore scientific output and the impact of European research. Although there is a broad scope within the literature covering the digital divide, the few studies using the bibliometric method focus mainly on the bibliographic study in health sciences, computer science, and technology.
+
+## References
+
+@Aria2017b, @forman2005, @donthu2021, @echchakoui2020, @veugelers2019
