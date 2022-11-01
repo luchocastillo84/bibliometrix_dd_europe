@@ -38,7 +38,7 @@ The emergence of the so-called "digital divide" has brought adverse effects, esp
 
 #### **Purpose:**
 
-This bibliometric aims to examine the current state of the art of European research in the field of the digital divide by combining the Web of Science, Scopus, and Dimensions bibliographic platforms. Additionally, this work seeks to make an exploration of the corporate digital divide.
+This bibliometric aims to examine the current state of the art of European research regarding the digital divide by combining the Web of Science, Scopus, and Dimensions bibliographic platforms. Additionally, this work seeks to make an exploration of the corporate digital divide.
 
 ```{r nrows, include=FALSE}
 MM <- read.csv(here("Data", "Processed", "M_EU.csv"))

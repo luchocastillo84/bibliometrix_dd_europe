@@ -39,43 +39,35 @@ Digital Divide: An Exploration of the Corporate Landscape*
 MM <- read.csv(here("Data", "Processed", "M_EU.csv"))
 ```
 
-**Data summary:** his bibliometric aims to examine the current state of
+**Data summary:** This bibliometric aims to examine the current state of
 the art of European research in the field of the digital divide by
 combining the Web of Science, Scopus, and Dimensions bibliographic
 platforms. Additionally, this work seeks to explore the corporate
 digital divide. The limit of the search comprises authors with European
 affiliations within the business, management, economics, technology, and
-computer science disciplines. After processing, cleaning and removing duplicate observations  total of `r nrow(MM)` documents,
-including articles, book chapters, conferences, and proceedings, were
-found in the three bibliographical sources. The results will be obtained
-by operating the R programming language using the bibliometrix package
-and the biblioshiny application.
+computer science disciplines. After processing, merging, and cleaning,\
+a total of `r nrow(MM)` documents, unique documents were incorporated
+into the final data set, including articles, book chapters, conferences,
+and proceedings, were found in the three bibliographical sources. The
+results will be obtained by operating the R programming language using
+the bibliometrix package and the biblioshiny application.
 
 ## 1. Data Description
-
-How does your project generate new data? Is existing data reused? Which
-data types (in terms of data formats like image data, text data or
-measurement data) arise in your project and in what way are they further
-processed? To what extent do these arise or what is the anticipated data
-volume?
 
 This research project will use secondary data collected by conducting a
 specific search on the digital divide using the Web of Science, Scopus,
 and Dimensions platforms. The three platforms have different graphic
 user interfaces that delimit the search and the supported formats in
-which bibliographical data is downloaded. The content of 
-bibliographical data varies between text, numeric and integers
-
-The source of the data are the Web of Science, Scopus and Dimensions
-platforms The data will be collected by conducting a specific search in
-the Web of Science and Scopus. For Dimensions the data will be requested
-through an API in this case a query will be written according /... This
-will result in texts (e.g. questionnaires, transcripts)/ numeric data/
-video/ audio.... The formats generated will be readable using word
-processing programm/ statistical software/ video players/ audio
-player... .
+which bibliographical data is downloaded. The content of bibliographical
+data varies between text, numeric, and integers data types, and the
+formats that generate each platform will be readable using the R
+programing language
 
 ## 1.1 Data collection
+
+During this stage, the search criteria, the queries, and the formats
+downloaded are the following:
+
 ```{r wos, include=FALSE}
 wos_file <- c("eu_wos_1_500.txt", 
               "eu_wos_501_1032.txt")
@@ -89,6 +81,11 @@ WW <- convert2df(here("Data", # processed data frame for bibliometrics
 
 #### Web of Science
 
+This platform allows one to choose the formats and the fields. While
+exporting the data, a *plain text file* was chosen. The custom selection
+used all the Web of Science core collection fields for the record
+content.
+
 -   **Searched Fields:** Keywords and Title
 -   **Searched Text:** "digital divide\*" OR "digital inequalit\*" OR
     "digital gap\*"
@@ -100,7 +97,7 @@ WW <- convert2df(here("Data", # processed data frame for bibliometrics
 -   **Time Frame:** `r min(WW$PY, na.rm = T)` -
     `r max(WW$PY, na.rm = T)`
 -   **Total Documents:** `r nrow(WW)`
--   **Query Link:** [Go to Web of Science Query
+-   **Query:** [Go to Web of Science Query
     Link](https://www.webofscience.com/wos/woscc/summary/4811505d-f079-4eb4-85b5-0efb1bba0b49-53a1a627/relevance/1)
 -   **Downloaded Data Type:** .txt
 -   **Download data and Size:** [eu_wos_1\_500.txt 2.5
@@ -109,6 +106,11 @@ WW <- convert2df(here("Data", # processed data frame for bibliometrics
     MB](https://www.dropbox.com/s/ppqw2az5mcik5j4/eu_wos_501_1032.txt?dl=0)
 
 ### Scopus
+
+This database also allows one to choose the formats and the necessary
+fields to conduct a bibliometric analysis. In this case, all the
+categories of citation information, bibliographical information,
+abstracts, and keywords.
 
 ```{r scopus, include=FALSE}
 SS <- convert2df(here("Data",  # processed data frame for bibliometrics 37 columns
@@ -129,13 +131,18 @@ SS <- convert2df(here("Data",  # processed data frame for bibliometrics 37 colum
 -   **Time Frame:** `r min(SS$PY, na.rm = T)` -
     `r max(SS$PY, na.rm = T)`
 -   **Total Documents:** `r nrow(SS)`
--   **Query Link:** [Vizualize
+-   **Query:** [Vizualize
     query](https://www.dropbox.com/s/m53l0v0z1i21kc4/scopus_query.rtf?dl=0)
 -   **Downloaded Data Type:** .csv
 -   **Download data and Size:** [eu_scopus_1\_1786.csv 16.9
     MB](https://www.dropbox.com/s/fywg0lnvq243zve/eu_scopus_1_1786.csv?dl=0)
 
 ### Dimensions
+
+This database has a less developed graphic user interface. Even though
+it lets one choose the format, it does not let one choose the fields.
+However, the search can be customized using the Application Programming
+Interface API.
 
 ```{r dim, include=FALSE}
 dim_file <- c("dim_1_1467.csv", 
@@ -159,23 +166,20 @@ DD <- convert2df(here("Data", # raw data frame
 -   **Time Frame:** `r min(DD$PY, na.rm = T)` -
     `r max(DD$PY, na.rm = T)`
 -   **Total Documents:** `r nrow(DD)`
--   **Query Link:** [Vizualize
-    query](https://www.dropbox.com/s/m53l0v0z1i21kc4/scopus_query.rtf?dl=0)
+-   **Query:** Not available for graphic user interface.
 -   **Downloaded Data Type:** .csv
 -   **Download data and Size:** [dim_1\_1467.csv 8.3
     MB](https://www.dropbox.com/s/35wfrt4kp9ujoct/dim_1_1467.csv?dl=0)
     and [dim_1468_3108.csv 3.8
     MB](https://www.dropbox.com/s/te4ykjln8l6gihu/dim_1468_3108.csv?dl=0)
 
-During the data processing stage the program xy/yz/zx will be used and
-the formats of the processed data will be .xxx, .yyy, .zzz.
+## 1.2 Data Processing
 
-The volume of the generated data will be estimated at x GB/ TB.
+During the data processing stage the R programming language will be used and
+the processed data will be *.rda* format.
 
-Furthermore, these research data will be reused: Presse- und
-Informationsamt der Bundesregierung, Berlin (2021). Trust in State and
-Society during the Corona Crisis (March 2021). GESIS Data Archive,
-Cologne. ZA7698 Data file Version 1.0.0,
+The volume of the generated data will be estimated between 0.7 to 1 GB.
+
 
 <https://doi.org/10.4232/1.13803>.
 
