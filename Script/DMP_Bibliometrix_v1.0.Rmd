@@ -157,7 +157,7 @@ DD <- convert2df(here("Data", # raw data frame
 
 -   **Searched Fields:** Title and Abstract.
 -   **Searched Text:** "digital divide\*" OR "digital inequalit\*" OR
-    "digital gap\*"
+    "digital gap\*" 
 -   **Document Types:** Articles, proceedings, and book chapters.
 -   **Diemensions Categories:** (38) Economics, (35) Commerce,
     Management, Tourism and Services, and (46) Information and Computing
