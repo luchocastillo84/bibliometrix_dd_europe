@@ -34,11 +34,11 @@ library(dimensionsR)
 
 #### **Context:**
 
-The emergence of the so-called "digital divide" has brought adverse effects, especially on the actors in society who lack access, literacy, and fluency in digital technologies. Within the extant literature, the digital divide is triggered by different factors. For example, the generational gap, the income and wage disparities, the unbalance between rural and urban at the regional level, and the gap between emerging and developed economies, among others. The European Union has recently launched the Digital Europe program, accompanied by a battery of policies that will guide Europe's digital and technological future. Therefore, it is pertinent to understand the state of the art of the digital divide, identify the different factors that persist in the widening of the digital divide in Europe, and recognize the new actors in society and the economy to reconfigure and design adequate policies.
+The emergence of the so-called "digital divide" has brought adverse effects, especially on the actors in society who lack access, literacy, and fluency in digital technologies. Within the extant literature, the digital divide is triggered by different factors. For example, the generational gap, the income and wage disparities, the unbalance between rural and urban at the regional level, and the gap between emerging and developed economies, among others. The European Union has recently launched the Digital Europe program, accompanied by a battery of policies that will not only guide the digital and technological future of European countries but also propose an agenda to bridge the digital divide at different levels. In so doing, it becomes relevant to evaluate the main research contributions, identify the leading academic trends, and determine possible knowledge gaps within the digital divide.
 
 #### **Purpose:**
 
-This bibliometric aims to examine the current state of the art of European research regarding the digital divide by combining the Web of Science, Scopus, and Dimensions bibliographic platforms. Additionally, this work seeks to make an exploration of the corporate digital divide. 
+This study aims to examine the intellectual interactions, structural connections, and thematic relationships among European research components regarding the digital divide using different bibliometric techniques such as citation and co-citations analysis, bibliographic coupling, and co-word analysis. At the same time, this work endeavors to explore the corporate digital divide and answer the following research questions. *What are the most influential publications and authors? What are the thematic clusters among the citing publications? What are the intellectual structure and the knowledge foundations within the domain of the digital divide?* Understanding the digital divide as a multidimensional issue, *what are the thematic clusters among publications? Is the corporate digital divide considered a gap for future research?*
 
 ```{r nrows, include=FALSE}
 MM <- read.csv(here("Data", "Processed", "M_EU.csv"))
@@ -48,7 +48,7 @@ docs <- nrow(MM)
 
 #### **Design/Methodology/Approach:**
 
-This investigation will conduct a bibliometric analysis by merging three databases (Web of Science, Scopus, and Dimensions), limiting the search to authors with European affiliations within the business, management, economics, technology, and computer science disciplines. A total of `r nrow(MM)` documents, including articles, book chapters, conferences, and proceedings, were found in the three bibliographical sources. The results will be obtained by operating the R programming language using the bibliometrics package and the biblioshiny application.
+This investigation will conduct a bibliometric analysis by merging data from three databases (Web of Science, Scopus, and Dimensions), limiting the search to authors with European affiliations within the business, management, economics, technology, and computer science disciplines. A total of `r nrow(MM)` unique documents, including articles, book chapters, conferences, and proceedings, were found in the three bibliographical sources. The results will be obtained by operating the R programming language using the bibliometrics package and the biblioshiny application.
 
 #### **Originality Value:**
 
