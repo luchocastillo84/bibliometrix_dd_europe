@@ -365,32 +365,38 @@ pre code {
 </div>
 
 
-<div id="bibliometrix_dd_europe" class="section level1">
-<h1>bibliometrix_dd_europe</h1>
-<p>```{r setup, include=FALSE} knitr::opts_chunk$set(echo = FALSE)
-library(tidyverse) library(here) library(bibliometrix) library(devtools)
-library(readtext) library(tidyr) library(bib2df) library(readr)
-library(visdat) library(stringr) library(dplyr) library(bibtex)
-library(readxl) library(janitor) library(naniar)
-library(dimensionsR)</p>
-<pre><code>
-# Biliometric Analysis of European Research on Digital divide
-
-This study aims to examine the intellectual interactions, structural connections, and thematic relationships among European research components regarding the digital divide using different bibliometric techniques such as citation and co-citations analysis, bibliographic coupling, and co-word analysis. At the same time, this work endeavors to explore the corporate digital divide and answer the following research questions. *What are the most influential publications and authors? What are the thematic clusters among the citing publications? What are the intellectual structure and the knowledge foundations within the domain of the digital divide?* Understanding the digital divide as a multidimensional issue, *what are the thematic clusters among publications? Is the corporate digital divide considered a gap for future research?*
-
-```{r nrows, include=FALSE}
-MM &lt;- read.csv(here(&quot;Data&quot;, &quot;Processed&quot;, &quot;M_EU.csv&quot;))
-docs &lt;- nrow(MM)
-</code></pre>
+<hr />
+<div id="biliometric-analysis-of-european-research-on-digital-divide-an-exploration-of-the-corporate-landscape" class="section level1">
+<h1>Biliometric Analysis of European Research on Digital divide: An
+Exploration of the Corporate Landscape</h1>
+<div id="abstract" class="section level4">
+<h4><em>Abstract:</em></h4>
+<p>This study aims to examine the intellectual interactions, structural
+connections, and thematic relationships among European research
+components regarding the digital divide using different bibliometric
+techniques such as citation and co-citations analysis, bibliographic
+coupling, and co-word analysis. At the same time, this work endeavors to
+explore the corporate digital divide and answer the following research
+questions. <em>What are the most influential publications and authors?
+What are the thematic clusters among the citing publications? What are
+the intellectual structure and the knowledge foundations within the
+domain of the digital divide?</em> Understanding the digital divide as a
+multidimensional issue, <em>what are the thematic clusters among
+publications? Is the corporate digital divide considered a gap for
+future research?</em></p>
 <p>This investigation will conduct a bibliometric analysis by merging
 data from three databases (Web of Science, Scopus, and Dimensions),
 limiting the search to authors with European affiliations within the
 business, management, economics, technology, and computer science
-disciplines. A total of <code>r nrow(MM)</code> unique documents,
-including articles, book chapters, conferences, and proceedings, were
-found in the three bibliographical sources. The results will be obtained
-by operating the R programming language using the bibliometrics package
-and the biblioshiny application.</p>
+disciplines. A total of 1914 unique documents, including articles, book
+chapters, conferences, and proceedings, were found in the three
+bibliographical sources. The results will be obtained by operating the R
+programming language using the bibliometrics package and the biblioshiny
+application.</p>
+<p>The data description, the collection and the data processing is
+explained in the <a href="https://github.com/luchocastillo84/bibliometrix_dd_europe/blob/master/Script/DMP_Bibliometrix_v1.0.pdf"><strong>Data
+Management Plan</strong></a></p>
+</div>
 </div>
 
 

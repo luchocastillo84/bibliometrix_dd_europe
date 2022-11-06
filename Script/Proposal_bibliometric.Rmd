@@ -3,10 +3,10 @@ title: 'Bibliometric Analysis of European Research on Digital Divide: An Explora
 author: "Luis Carlos Castillo"
 date: "`r Sys.Date()`"
 output:
+  pdf_document: default
+  html_document: default
   word_document: 
     reference_docx: "template_prop.dotx"
-  html_document: default
-  pdf_document: default
 geometry: left = 2.54cm, right = 2.54cm, top = 2.54cm, bottom = 2.54cm
 bibliography: references.bib
 ---
@@ -48,7 +48,7 @@ docs <- nrow(MM)
 
 #### **Design/Methodology/Approach:**
 
-This investigation will conduct a bibliometric analysis by merging data from three databases (Web of Science, Scopus, and Dimensions), limiting the search to authors with European affiliations within the business, management, economics, technology, and computer science disciplines. A total of `r nrow(MM)` unique documents, including articles, book chapters, conferences, and proceedings, were found in the three bibliographical sources. The results will be obtained by operating the R programming language using the bibliometrics package and the biblioshiny application.
+This investigation will conduct a bibliometric analysis by merging data from three databases (Web of Science, Scopus, and Dimensions), limiting the search to authors with European affiliations within the business, management, economics, technology, and computer science disciplines. A total of `r docs` unique documents, including articles, book chapters, conferences, and proceedings, were found in the three bibliographical sources. The results will be obtained by operating the R programming language using the bibliometrics package and the biblioshiny application.
 
 #### **Originality Value:**
 
