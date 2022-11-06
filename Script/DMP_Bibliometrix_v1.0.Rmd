@@ -39,7 +39,7 @@ Digital Divide: An Exploration of the Corporate Landscape*
 MM <- read.csv(here("Data", "Processed", "M_EU.csv"))
 ```
 
-**Data summary:** This bibliometric aims to examine the current state of
+**Data summary:** This bibliometric aims to examine the state of
 the art of European research in the field of the digital divide by
 combining the Web of Science, Scopus, and Dimensions bibliographic
 platforms. Additionally, this work seeks to explore the corporate
@@ -61,7 +61,7 @@ user interfaces that delimit the search and the supported formats in
 which bibliographical data is downloaded. The content of bibliographical
 data varies between text, numeric, and integers data types, and the
 formats that generate each platform will be readable using the R
-programing language
+programming language
 
 ## 1.1 Data collection
 

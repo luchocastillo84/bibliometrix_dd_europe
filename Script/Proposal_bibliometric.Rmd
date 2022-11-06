@@ -52,7 +52,7 @@ This investigation will conduct a bibliometric analysis by merging data from thr
 
 #### **Originality Value:**
 
-The novelty of this study relies on a more comprehensive bibliographical data range on the digital divide by merging the Web of Science, Scopus, and Dimensions databases to explore scientific output and the impact of European research. Although there is a broad scope within the literature covering the digital divide, the few studies using the bibliometric method focus mainly on the bibliographic study in health sciences, computer science, and technology.
+The novelty of this study relies on a more comprehensive bibliographical data range on the digital divide by merging data from the Web of Science, Scopus, and Dimensions databases to explore scientific output and the impact of European research. Although there is a broad scope within the literature covering the digital divide, the few studies using the bibliometric method focus mainly on the bibliographic study in health sciences, computer science, and technology.
 
 ## References
 
