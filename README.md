@@ -1,6 +1,3 @@
----
----
----
 
 # Biliometric Analysis of European Research on Digital divide: An Exploration   of the Corporate Landscape
 
