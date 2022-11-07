@@ -15,6 +15,7 @@ library(readxl)
 library(janitor)
 library(naniar)
 library(dimensionsR)
+library(jsonlite)
 
 #### Web of Science ####
 
@@ -357,12 +358,23 @@ Y=table(M$PY)
 ny=dim(Y)[1]
 CAGR<-as.numeric(round(((Y[ny]/Y[1])^(1/(ny-1))-1)*100,2))
 
-which(grepl("BACH MP", S$AU))
+which(grepl("bibliome*", M$AB, ignore.case = TRUE))
 
 # 10  219 1173 1355 1580 1714 corporate 
 # 556  618 1024 1044 1120 1176 1231 1361 1414 1487 1573 1597 1648 1723 1860 business
 # 308  379r  556  593  999 1006 1189 1573 1580 1600 1679 1874 firms
-i <- 1874
+i <- 1912
+look <- list(M$TI[i],
+             M$AU[i],
+             M$PY[i],
+             M$DE[i],
+             M$AB[i],
+             M$TC[i],
+             M$PF[i],
+             M$AU_CO[i])
+
+toJSON(look, pretty= T)
+pretty_json
 M$TI[i]
 M$AU[i]
 M$PY[i]

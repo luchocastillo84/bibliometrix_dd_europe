@@ -39,13 +39,13 @@ Digital Divide: An Exploration of the Corporate Landscape*
 MM <- read.csv(here("Data", "Processed", "M_EU.csv"))
 ```
 
-**Data summary:** This bibliometric aims to examine the state of
-the art of European research in the field of the digital divide by
-combining the Web of Science, Scopus, and Dimensions bibliographic
-platforms. Additionally, this work seeks to explore the corporate
-digital divide. The limit of the search comprises authors with European
-affiliations within the business, management, economics, technology, and
-computer science disciplines. After processing, merging, and cleaning,\
+**Data summary:** This bibliometric aims to examine the state of the art
+of European research in the field of the digital divide by combining the
+Web of Science, Scopus, and Dimensions bibliographic platforms.
+Additionally, this work seeks to explore the corporate digital divide.
+The limit of the search comprises authors with European affiliations
+within the business, management, economics, technology, and computer
+science disciplines. After processing, merging, and cleaning,\
 a total of `r nrow(MM)` documents, unique documents were incorporated
 into the final data set, including articles, book chapters, conferences,
 and proceedings, were found in the three bibliographical sources. The
@@ -157,7 +157,7 @@ DD <- convert2df(here("Data", # raw data frame
 
 -   **Searched Fields:** Title and Abstract.
 -   **Searched Text:** "digital divide\*" OR "digital inequalit\*" OR
-    "digital gap\*" 
+    "digital gap\*"
 -   **Document Types:** Articles, proceedings, and book chapters.
 -   **Diemensions Categories:** (38) Economics, (35) Commerce,
     Management, Tourism and Services, and (46) Information and Computing
@@ -175,11 +175,29 @@ DD <- convert2df(here("Data", # raw data frame
 
 ## 1.2 Data Processing
 
-During the data processing stage the R programming language will be used and
-the processed data will be *.rda* format.
+The R programming language environment will be used during the data
+processing stage. After downloading, the raw files (.txt and .csv
+formats) from each platform will be converted into a bibliographic
+database format using the bibliometrix package. The volume of the
+generated data in this repository will be estimated between 0.7 to 1 GB.
 
-The volume of the generated data will be estimated between 0.7 to 1 GB.
-
+The three platforms have field tags with different names when
+downloading the data. In this case, the field tag homogenization process
+follows the [Web of Science Core Collection field
+tags](https://support.clarivate.com/ScientificandAcademicResearch/s/article/Web-of-Science-Core-Collection-List-of-field-tags-in-output?language=en_US).
+The primary and necessary variables to run a bibliometric analysis
+suggested in the [bibliometrix
+package](https://www.bibliometrix.org/vignettes/Data-Importing-and-Converting.html)
+were first identified. However, when merging the three databases, it was
+found that the raw formats contained a different number of variables.
+For example, the document downloaded from the Web of Science contained
+[73
+variables](https://www.dropbox.com/scl/fi/2kw4wge5y7prwfn8i6mzb/col_names_wos.xlsx?dl=0&rlkey=panwseiwrktiut611n6cpu04m),
+Scopus
+[37](https://www.dropbox.com/scl/fi/4ochrul4cu5d0v4xsgrdb/col_names_scopus.xlsx?dl=0&rlkey=milgv2adjegonkom45yfunxeb),
+and Dimensions [30](https://www.dropbox.com/scl/fi/0t01j093rwtsqxozna9dj/col_names_dim.xlsx?dl=0&rlkey=o87k0k0ddy3cy2ga0ugyy0u4k). Therefore, we proceeded to select variables in common
+between the three platforms, obtaining a database with [29 variables](https://www.dropbox.com/scl/fi/ls7et6b55epo5g5t5ecmk/colnames_M.xlsx?dl=0&rlkey=j0we18gy90mnnlfawnp00jlxq) as a
+result.
 
 <https://doi.org/10.4232/1.13803>.
 

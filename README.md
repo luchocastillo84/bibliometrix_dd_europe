@@ -10,3 +10,5 @@ The novelty of this study relies on a more comprehensive bibliographical data ra
 
 The data description, the collection and the data processing is explained in the [**Data Management Plan** ](https://github.com/luchocastillo84/bibliometrix_dd_europe/blob/master/Script/DMP_Bibliometrix_v1.0.pdf)
 
+This project still in the development stage.
+
