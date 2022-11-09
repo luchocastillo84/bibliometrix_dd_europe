@@ -29,7 +29,8 @@ raw_W <- convert2df(here("Data", # raw data frame
                            wos_file), 
                       dbsource = "wos", 
                       format = "plaintext")
-
+col_names_wos <- as.data.frame(colnames(raw_W))
+write_excel_csv(col_names_wos, here("Data", "Tags_fields", "col_names_wos.xls"))
 W <- convert2df(here("Data", # processed data frame for bibliometrics
                      "Raw", 
                      wos_file), 
@@ -358,30 +359,14 @@ Y=table(M$PY)
 ny=dim(Y)[1]
 CAGR<-as.numeric(round(((Y[ny]/Y[1])^(1/(ny-1))-1)*100,2))
 
-which(grepl("bibliome*", M$AB, ignore.case = TRUE))
-
+topic <- which(grepl("wave", S$AB, ignore.case = TRUE))
+m_cited <- head(order(-M$TC), 10)
 # 10  219 1173 1355 1580 1714 corporate 
 # 556  618 1024 1044 1120 1176 1231 1361 1414 1487 1573 1597 1648 1723 1860 business
 # 308  379r  556  593  999 1006 1189 1573 1580 1600 1679 1874 firms
-i <- 1912
-look <- list(M$TI[i],
-             M$AU[i],
-             M$PY[i],
-             M$DE[i],
-             M$AB[i],
-             M$TC[i],
-             M$PF[i],
-             M$AU_CO[i])
 
-toJSON(look, pretty= T)
-pretty_json
-M$TI[i]
-M$AU[i]
-M$PY[i]
-M$DE[i]
-M$AB[i]
-M$TC[i]
-M$PF[i]
+i <- m_cited
+toJSON(M[i, c(2, 1, 3, 17, 13, 6, 8, 12, 22, 29, 23)], pretty= T)
 
 
 

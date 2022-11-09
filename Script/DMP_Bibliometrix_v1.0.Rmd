@@ -181,25 +181,28 @@ formats) from each platform will be converted into a bibliographic
 database format using the bibliometrix package. The volume of the
 generated data in this repository will be estimated between 0.7 to 1 GB.
 
-The three platforms have field tags with different names when
-downloading the data. In this case, the field tag homogenization process
-follows the [Web of Science Core Collection field
-tags](https://support.clarivate.com/ScientificandAcademicResearch/s/article/Web-of-Science-Core-Collection-List-of-field-tags-in-output?language=en_US).
-The primary and necessary variables to run a bibliometric analysis
-suggested in the [bibliometrix
-package](https://www.bibliometrix.org/vignettes/Data-Importing-and-Converting.html)
-were first identified. However, when merging the three databases, it was
-found that the raw formats contained a different number of variables.
-For example, the document downloaded from the Web of Science contained
-[73
+After converting the downloaded datasets from the three platforms into
+bibliographic data frames, differences were found in column length and
+names. For example, the converted data frame from the Web of Science
+contained [73
 variables](https://www.dropbox.com/scl/fi/2kw4wge5y7prwfn8i6mzb/col_names_wos.xlsx?dl=0&rlkey=panwseiwrktiut611n6cpu04m),
 Scopus
 [37](https://www.dropbox.com/scl/fi/4ochrul4cu5d0v4xsgrdb/col_names_scopus.xlsx?dl=0&rlkey=milgv2adjegonkom45yfunxeb),
-and Dimensions [30](https://www.dropbox.com/scl/fi/0t01j093rwtsqxozna9dj/col_names_dim.xlsx?dl=0&rlkey=o87k0k0ddy3cy2ga0ugyy0u4k). Therefore, we proceeded to select variables in common
-between the three platforms, obtaining a database with [29 variables](https://www.dropbox.com/scl/fi/ls7et6b55epo5g5t5ecmk/colnames_M.xlsx?dl=0&rlkey=j0we18gy90mnnlfawnp00jlxq) as a
-result.
+and Dimensions
+[30](https://www.dropbox.com/scl/fi/0t01j093rwtsqxozna9dj/col_names_dim.xlsx?dl=0&rlkey=o87k0k0ddy3cy2ga0ugyy0u4k).
+To solve this problem, first, we followed the [Web of Science Core
+Collection field
+tags](https://support.clarivate.com/ScientificandAcademicResearch/s/article/Web-of-Science-Core-Collection-List-of-field-tags-in-output?language=en_US)
+to homogenize the variable's names. Second, the [bibliometrix
+manual](https://www.bibliometrix.org/vignettes/Data-Importing-and-Converting.html)
+suggests selecting the main variables to conduct a bibliometric
+analysis. As a result, the final bibliographic data frame contains [29
+variables](https://www.dropbox.com/scl/fi/ls7et6b55epo5g5t5ecmk/colnames_M.xlsx?dl=0&rlkey=j0we18gy90mnnlfawnp00jlxq).
 
-<https://doi.org/10.4232/1.13803>.
+This
+[script](https://github.com/luchocastillo84/bibliometrix_dd_europe/blob/master/Script/Biblio_data_bases.R)
+contains the data processing, cleaning, and merging from the three
+sources.
 
 ## 2. Documentation and Data Quality
 
@@ -229,32 +232,8 @@ convention and folder structure to manage the data responsibly. The
 versioning of the data will be documented in the processing code/ Git
 will be used for versioning of the research data.
 
-## 3. Storage and technical archiving
 
-How is the data to be stored and archived throughout the project
-duration? What is in place to secure sensitive data throughout the
-project duration (access and usage rights)?
-
-*Nonidentifiable data* Throughout the project duration the
-nonidentifiable data will be stored on the collaborative workspace
-(R-Studio/ GitHub/ Nextcloud/ Seafile/ etc.). The data will be backed up
-(daily/ weekly/ fortnightly) on the central backup server of the
-University.
-
-*Identifiable/ sensitive data* There will be identifiable/ sensitive
-data which will be stored encrypted on the institutional system Seafile/
-on the Netzlaufwerk of the University of Bremen. The encrypted
-identifiable data will be backed up (daily/ weekly/ fortnightly) on the
-central backup server of the university. Only person x and person y/
-Only directly involved researchers will have access to identifiable/
-sensitive data.
-
-The transcripts will be pseudonymized/ anonymized at the earliest stage
-possible. The survey data will be anonymized at the earliest stage
-possible. Survey data/ transcripts and identifiable data (e.g. email
-address, phone numbers) will be stored separately.
-
-## 4. Legal obligations and conditions
+## 3. Legal obligations and conditions
 
 What are the legal specifics associated with the handling of research
 data in your project? Do you anticipate any implications or restrictions
@@ -287,53 +266,8 @@ case of a re-indification is high, the data will be stored under
 protected access in the e. g. Qualiservice for 10 years and made
 accessible only for the scientific use.
 
-## 5 Data exchange and long-term data accessibility
 
-Which data sets are especially suitable for use in other contexts? Which
-criteria are used to select research data to make it available for
-subsequent use by others? Are you planning to archive your data in a
-suitable infrastructure? If so, how and where? Are there any retention
-periods? When is the research data available for use by third parties?
-
-The "milestones" of the research data/ The research data in their final
-versions (e.g. anonymized survey data/ pseudonymized transcripts, code,
-informed consent form, questionnaire, interview guide) will be stored in
-a disciplin-specific repository (e.g. Gesis/ Qualiservice) for the
-long-term preservation and for the (scientific) reuse.
-
-The anonymized data will be published with the license xy at the end of
-the project in the repository xy.
-
-The pseudonymized data will be accessible for the scientific reuse with
-the license xy ("conditional access"/ protected access"). The access
-conditions will be described in the repository xy.
-
-The data (e.g. transcripts) will not be accessible for the reuse because
-of the vulnerable groups of participants. Interview guide and codebook
-will be published with license xy in the repository xy.
-
-The encrypted video files/ the sensitive data will be stored on an
-institutional server for 10 years under "protected access". Metadata and
-conditions for access to and reuse of the data will be published in the
-repository xy.
-
-Following material will be published to make the accessible/ open data
-understandable and reusable for other scientists: Methods report,
-instrument of data collection (e.g. questionnaire, code), codebook, code
-for data processing and data analysis, informed consent form, tools and
-software including version number.
-
-The papers will include information and accessibility of the data to
-make them findable. Furthermore, keywords in the research data
-repository will make the data more findable.
-
-The research data will be published the latest at the end of the
-project/ before the first publication.
-
-There will be a rentention period of x years, because of potential
-patent rights.
-
-## 6 Responsibilities and resources
+## 4 Responsibilities and resources
 
 Who is responsible for adequate handling of the research data
 (description of roles and responsibilities within the project)? Which
@@ -342,33 +276,22 @@ handling of research data within the project? Who is responsible for
 curating the data once the project has ended?
 
 Project coordinator:
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
 Name, affiliation, email address, ID's (e.g. ORCID)
 
 Principal investigator:
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
 Name, affiliation, email address, ID's (e.g. ORCID)
 
 Author of DMP:
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
 Name, affiliation, email address, ID's (e.g. ORCID)
 
-Data officer and responsible for
-DMP:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+Data officer and responsible for DMP: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
 Name, affiliation, email address, ID's (e.g. ORCID)
 
-The estimated costs of RDM-activities:
 
-Writing DMP: [2 hours - 2 days] Transcription: 1 hour interview = 4,5
-hours transcription per interview; x interviews X hour wage of research
-assistant = xxxx Euro Codebook: x hours/ days Methods report: x hours/
-days
-
-Costs for archiving in repository xy: xxx Euro (offer attached to
-proposal)
-
-Once the project has ended the data will be curated in the repository
-xy.
-
-Once the project has ended the data on the institutional server will be
-curated/ made accessible by [...].
