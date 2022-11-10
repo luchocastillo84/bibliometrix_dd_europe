@@ -40,17 +40,16 @@ MM <- read.csv(here("Data", "Processed", "M_EU.csv"))
 ```
 
 **Data summary:** This bibliometric aims to examine the state of the art
-of European research in the field of the digital divide by combining the
-Web of Science, Scopus, and Dimensions bibliographic platforms.
-Additionally, this work seeks to explore the corporate digital divide.
-The limit of the search comprises authors with European affiliations
-within the business, management, economics, technology, and computer
-science disciplines. After processing, merging, and cleaning,\
-a total of `r nrow(MM)` documents, unique documents were incorporated
-into the final data set, including articles, book chapters, conferences,
-and proceedings, were found in the three bibliographical sources. The
-results will be obtained by operating the R programming language using
-the bibliometrix package and the biblioshiny application.
+of European research in the field of the digital divide by combining
+data from the Web of Science, Scopus, and Dimensions bibliographic
+platforms. Additionally, this work seeks to explore the corporate
+digital divide. The limit of the search comprises authors with European
+affiliations within the business, management, economics, technology, and
+computer science disciplines. After processing, merging, and cleaning, a
+total of `r nrow(MM)` unique documents were incorporated into the final
+data set, including articles, book chapters, conferences, and
+proceedings. The results will be obtained by operating the R programming
+language using the bibliometrix package and the biblioshiny application.
 
 ## 1. Data Description
 
@@ -65,8 +64,10 @@ programming language
 
 ## 1.1 Data collection
 
-During this stage, the search criteria, the queries, and the formats
-downloaded are the following:
+Before collecting the data, access to the graphical user interfaces of
+each platform was granted through university affiliation. During this
+stage, the search criteria, the queries, and the formats downloaded are
+the following:
 
 ```{r wos, include=FALSE}
 wos_file <- c("eu_wos_1_500.txt", 
@@ -96,6 +97,7 @@ content.
 -   **Region:** Countries in Europe
 -   **Time Frame:** `r min(WW$PY, na.rm = T)` -
     `r max(WW$PY, na.rm = T)`
+-   **Date of Search:** 10.10.2022
 -   **Total Documents:** `r nrow(WW)`
 -   **Query:** [Go to Web of Science Query
     Link](https://www.webofscience.com/wos/woscc/summary/4811505d-f079-4eb4-85b5-0efb1bba0b49-53a1a627/relevance/1)
@@ -130,6 +132,7 @@ SS <- convert2df(here("Data",  # processed data frame for bibliometrics 37 colum
 -   **Region:** Countries in Europe.
 -   **Time Frame:** `r min(SS$PY, na.rm = T)` -
     `r max(SS$PY, na.rm = T)`
+-   **Date of Search:** 05.10.2022
 -   **Total Documents:** `r nrow(SS)`
 -   **Query:** [Vizualize
     query](https://www.dropbox.com/s/m53l0v0z1i21kc4/scopus_query.rtf?dl=0)
@@ -159,12 +162,13 @@ DD <- convert2df(here("Data", # raw data frame
 -   **Searched Text:** "digital divide\*" OR "digital inequalit\*" OR
     "digital gap\*"
 -   **Document Types:** Articles, proceedings, and book chapters.
--   **Diemensions Categories:** (38) Economics, (35) Commerce,
+-   **Dimensions Categories:** (38) Economics, (35) Commerce,
     Management, Tourism and Services, and (46) Information and Computing
     Sciences.
 -   **Region:** Countries in Europe.
 -   **Time Frame:** `r min(DD$PY, na.rm = T)` -
     `r max(DD$PY, na.rm = T)`
+-   **Date of Search:** 14.10.2022\
 -   **Total Documents:** `r nrow(DD)`
 -   **Query:** Not available for graphic user interface.
 -   **Downloaded Data Type:** .csv
@@ -182,58 +186,51 @@ database format using the bibliometrix package. The volume of the
 generated data in this repository will be estimated between 0.7 to 1 GB.
 
 After converting the downloaded datasets from the three platforms into
-bibliographic data frames, differences were found in column length and
-names. For example, the converted data frame from the Web of Science
-contained [73
-variables](https://www.dropbox.com/scl/fi/2kw4wge5y7prwfn8i6mzb/col_names_wos.xlsx?dl=0&rlkey=panwseiwrktiut611n6cpu04m),
-Scopus
-[37](https://www.dropbox.com/scl/fi/4ochrul4cu5d0v4xsgrdb/col_names_scopus.xlsx?dl=0&rlkey=milgv2adjegonkom45yfunxeb),
-and Dimensions
-[30](https://www.dropbox.com/scl/fi/0t01j093rwtsqxozna9dj/col_names_dim.xlsx?dl=0&rlkey=o87k0k0ddy3cy2ga0ugyy0u4k).
-To solve this problem, first, we followed the [Web of Science Core
-Collection field
-tags](https://support.clarivate.com/ScientificandAcademicResearch/s/article/Web-of-Science-Core-Collection-List-of-field-tags-in-output?language=en_US)
+bibliographic data frames, there were differences in column length and
+names, meaning the three platforms used different codebooks for naming
+the variables. For example, the [Web of Science
+codebook](https://www.dropbox.com/scl/fi/2kw4wge5y7prwfn8i6mzb/col_names_wos.xlsx?dl=0&rlkey=panwseiwrktiut611n6cpu04m)
+contained 73 variables, the [Scopus
+codebook](https://www.dropbox.com/scl/fi/4ochrul4cu5d0v4xsgrdb/col_names_scopus.xlsx?dl=0&rlkey=milgv2adjegonkom45yfunxeb)
+37 variables, and the [Dimensions
+codebook](https://www.dropbox.com/scl/fi/0t01j093rwtsqxozna9dj/col_names_dim.xlsx?dl=0&rlkey=o87k0k0ddy3cy2ga0ugyy0u4k)
+30 variables. To solve this problem, first, we followed the [Web of
+Science Core Collection
+codebook](https://support.clarivate.com/ScientificandAcademicResearch/s/article/Web-of-Science-Core-Collection-List-of-field-tags-in-output?language=en_US)
 to homogenize the variable's names. Second, the [bibliometrix
 manual](https://www.bibliometrix.org/vignettes/Data-Importing-and-Converting.html)
 suggests selecting the main variables to conduct a bibliometric
-analysis. As a result, the final bibliographic data frame contains [29
-variables](https://www.dropbox.com/scl/fi/ls7et6b55epo5g5t5ecmk/colnames_M.xlsx?dl=0&rlkey=j0we18gy90mnnlfawnp00jlxq).
+analysis. As a result, the final bibliographic data frame contains 29
+variables ([see
+codebook](https://www.dropbox.com/scl/fi/ls7et6b55epo5g5t5ecmk/colnames_M.xlsx?dl=0&rlkey=j0we18gy90mnnlfawnp00jlxq)).
 
 This
 [script](https://github.com/luchocastillo84/bibliometrix_dd_europe/blob/master/Script/Biblio_data_bases.R)
-contains the data processing, cleaning, and merging from the three
-sources.
+contains the R-Studio workflow used to process, clean, and merge the
+bibliographic data frames from the three sources.
 
 ## 2. Documentation and Data Quality
 
-What approaches are being taken to describe the data in a comprehensible
-manner (such as the use of available metadata, documentation standards
-or ontologies)? What measures are being adopted to ensure high data
-quality? Are quality controls in place and if so, how do they operate?
-Which digital methods and tools (e.g. software) are required to use the
-data?
+The metadata creation will follow the Data Documentation Initiative DDI
+standards, including a codebook that describes the data and the variable
+types. To guarantee replicability both in the data collection and
+output, the reuse of data, and high-quality results, the following
+measures will be taken: pretests, data validation, peer review of data,
+repeat measurements, and the use of software and digital tools. This repository,
+[bibliometric_digital_divide_Europe](https://github.com/luchocastillo84/bibliometrix_dd_europe),
+will follow the R-Studio workflow using the bibliometrix package and the
+biblioshiny application for data processing and analysis. An ordered
+structure of the folders with documented code will also be managed using
+the version control offered by GitHub to track changes and manipulate
+data responsibly.
 
-The metadata standard Data Documentation Initiative will be used, as
-this is the standard followed by the repository [Gesis/ Qualiservice/
-etc.] which will store the project' s data. There will be a DDI codebook
-to describe the study, the data files and the variables. Keywords will
-be chosen from the European Language Social Science Thesaurus to
-describe the data. To ensure that the output of the data collection
-process will result in high-quality, valid data that can be replicated
-and reused, the following measures will be taken: • Pretests • Data
-entry validation • Peer review of data • Repeat measurements •
-Intercoder reliability measures • ... MAXQDA/ Word/ R-Studio/ SPSS/
-Python Version xy will be used for processing and analysing of the data.
-Later, the publication of the data will be (additionally) in .xy formats
-to ensure long-term usability and reusability for other scientists, so
-any word processing program/ statistical program/ etc. can be used for
-the reuse of the data. The project team follow their data naming
-convention and folder structure to manage the data responsibly. The
-versioning of the data will be documented in the processing code/ Git
-will be used for versioning of the research data.
+## 3. Storage and technical archiving
 
+This research project does not contain any sensible data; thus,
+throughout the project duration, data will be stored on the
+collaborative workspace R-Studio, GitHub, and Dropbox.
 
-## 3. Legal obligations and conditions
+## 4. Legal obligations and conditions
 
 What are the legal specifics associated with the handling of research
 data in your project? Do you anticipate any implications or restrictions
@@ -266,7 +263,6 @@ case of a re-indification is high, the data will be stored under
 protected access in the e. g. Qualiservice for 10 years and made
 accessible only for the scientific use.
 
-
 ## 4 Responsibilities and resources
 
 Who is responsible for adequate handling of the research data
@@ -290,8 +286,7 @@ Author of DMP:
 
 Name, affiliation, email address, ID's (e.g. ORCID)
 
-Data officer and responsible for DMP: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+Data officer and responsible for DMP:
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
 Name, affiliation, email address, ID's (e.g. ORCID)
-
-
