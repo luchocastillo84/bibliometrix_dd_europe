@@ -1,7 +1,5 @@
 ---
 title: 'Data Management Plan'
-subtitle: 'University of Urbino'
-author: "Luis Carlos Castillo-Tellez"
 date: "`r Sys.Date()`"
 output:
   pdf_document: default
@@ -216,7 +214,8 @@ standards, including a codebook that describes the data and the variable
 types. To guarantee replicability both in the data collection and
 output, the reuse of data, and high-quality results, the following
 measures will be taken: pretests, data validation, peer review of data,
-repeat measurements, and the use of software and digital tools. This repository,
+repeat measurements, and the use of software and digital tools. This
+repository,
 [bibliometric_digital_divide_Europe](https://github.com/luchocastillo84/bibliometrix_dd_europe),
 will follow the R-Studio workflow using the bibliometrix package and the
 biblioshiny application for data processing and analysis. An ordered
@@ -230,63 +229,49 @@ This research project does not contain any sensible data; thus,
 throughout the project duration, data will be stored on the
 collaborative workspace R-Studio, GitHub, and Dropbox.
 
-## 4. Legal obligations and conditions
 
-What are the legal specifics associated with the handling of research
-data in your project? Do you anticipate any implications or restrictions
-regarding subsequent publication or accessibility? What is in place to
-consider aspects of use and copyright law as well as ownership issues?
-Are there any significant research codes or professional standards to be
-taken into account?
+## 4. Responsibilities and resources
 
-Data collected in this research project is owned by ... represented by
-... .
+This bibliometric study is the initial part of a research agenda
+proposed by the principal researcher as academic work, which will be
+presented at the end of his doctoral studies. The principal investigator
+will collect, analyze, present, and write the study results in a
+scientific article format. In addition, this project will be oriented
+and guided by the supervisor and the co-supervisor. 
 
-As there will be personal data, there will be some implications for the
-publication and accessibility:
+### Principal Investigator and author of the DMP:
 
-Any identifiable personal data will be pseudonymized/ anonymized before
-allowing others to reuse the data.
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
-There will be an informed consent form for the participants regarding to
-the preservation in a repository and the scientific reuse of the
-pseudonymized data after the end of the project.
+Luis Carlos Castillo-Tellez 
 
-Pseudonymized data will be made accessible only for the scientific use.
+University of Urbino
 
-*vulnerable person/ groups*
+l.castillotellez@campus.uniurb.it
 
-The entire dataset will not made public to ensure the confidentiality
-and safety of the participants. As the participants are a vulnerable
-group/ As the risk of re-indification is high/ as the expected harm in
-case of a re-indification is high, the data will be stored under
-protected access in the e. g. Qualiservice for 10 years and made
-accessible only for the scientific use.
+[ORCID](https://orcid.org/my-orcid?orcid=0000-0003-2041-4596)
 
-## 4 Responsibilities and resources
 
-Who is responsible for adequate handling of the research data
-(description of roles and responsibilities within the project)? Which
-resources (costs; time or other) are required to implement adequate
-handling of research data within the project? Who is responsible for
-curating the data once the project has ended?
+### Supervisor:
 
-Project coordinator:
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
-Name, affiliation, email address, ID's (e.g. ORCID)
+Francesco Vidoli
 
-Principal investigator:
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+University of Urbino
 
-Name, affiliation, email address, ID's (e.g. ORCID)
+francesco.vidoli@uniurb.it
 
-Author of DMP:
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+[ORCID](https://orcid.org/0000-0003-4125-9337)
 
-Name, affiliation, email address, ID's (e.g. ORCID)
+### Co-Supervisor:
 
-Data officer and responsible for DMP:
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
-Name, affiliation, email address, ID's (e.g. ORCID)
+Michael Rochlitz
+
+University of Bremen
+
+michael.rochlitz@uni-bremen.de
+
+[ORCID](https://orcid.org/0000-0001-8652-8874)
