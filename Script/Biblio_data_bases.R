@@ -296,6 +296,8 @@ M <- M %>% replace_with_na_all(condition = ~. == "") # converting "" into NA wit
 M <- M %>% replace_with_na_all(condition = ~. == "NA") # converting "" into NA within the D
 vis_miss(M)
 
+M$AU_CO <- str_replace_all(M$AU_CO, "UNITED STATES", "USA")
+
 M_by_PF <- M %>% # dist contains a summary of documents type DT by unique DOI and BN
   group_by(PF) %>% # group by document type
   summarize(count = n(), # summary by count by DT 
@@ -359,14 +361,52 @@ Y=table(M$PY)
 ny=dim(Y)[1]
 CAGR<-as.numeric(round(((Y[ny]/Y[1])^(1/(ny-1))-1)*100,2))
 
-topic <- which(grepl("wave", S$AB, ignore.case = TRUE))
-m_cited <- head(order(-M$TC), 10)
+m_order <- M %>% arrange(PY)
+topic <-   which(grepl("antonelli", m_order$AU, ignore.case = TRUE))
+m_cited <- head(order(-m_order$TC), 10)
 # 10  219 1173 1355 1580 1714 corporate 
 # 556  618 1024 1044 1120 1176 1231 1361 1414 1487 1573 1597 1648 1723 1860 business
 # 308  379r  556  593  999 1006 1189 1573 1580 1600 1679 1874 firms
 
 i <- m_cited
-toJSON(M[i, c(2, 1, 3, 17, 13, 6, 8, 12, 22, 29, 23)], pretty= T)
+toJSON(m_order[i, c(2, 1, 3, 17, 13, 6, 8, 12, 22, 29, 23)], pretty= T)
+
+# delete this doi 10.1145/1242572.1242583
+
+
+
+M_1p <- m_order %>% filter(PY <= 2007)
+unique(M_1p$PY)
+
+m_cited <- head(order(-M_1p$TC), 10)
+i <- m_cited
+toJSON(M_1p[i, c(2, 1, 3, 17, 13, 6, 8, 12, 22, 29, 23)], pretty= T)
+
+results <- biblioAnalysis(M_1p)
+summary(results, k=20, pause=F, width=100)
+
+M_2p <- m_order %>% filter(PY > 2007 & PY <= 2014)
+unique(M_2p$PY)
+
+m_cited <- head(order(-M_2p$TC), 10)
+i <- m_cited
+toJSON(M_2p[i, c(2, 1, 3, 17, 13, 6, 8, 12, 22, 29, 23)], pretty= T)
+
+
+results <- biblioAnalysis(M_2p)
+summary(results, k=20, pause=F, width=100)
+
+M_3p <- m_order %>% filter(PY > 2014 & PY <= 2021)
+unique(M_3p$PY)
+
+m_cited <- head(order(-M_3p$TC), 10)
+i <- m_cited
+toJSON(M_3p[i, c(2, 1, 3, 17, 13, 6, 8, 12, 22, 29, 23)], pretty= T)
+
+
+results <- biblioAnalysis(M_3p)
+summary(results, k=20, pause=F, width=100)
+
 
 
 
