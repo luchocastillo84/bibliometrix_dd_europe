@@ -65,7 +65,7 @@ W <- W %>% filter(!is.na(CR)) # filters out NA values in the citations reference
 
 W <-  W %>% distinct(DI, .keep_all = T) # keeping only the unique docs by DI or DOI
 
-W[, c(5, 23)] <- lapply(W[, c(5,23)], tolower) # to lower DT and DI
+W[, c(5, 23)] <- lapply(W[, c(5,23)], tolower)
 
 W_by_DT <- W %>% # dist contains a summary of documents type DT by unique DOI and BN
         group_by(DT) %>% # group by document type
@@ -120,7 +120,7 @@ S <- S %>% replace_with_na_all(condition = ~. == "") # converting "" into NA wit
 S <- S %>% filter(!is.na(CR)) # filters out NA values in the citations references column
 S <- S %>% filter(!is.na(AU_CO))
 S <-  S %>% distinct(DI, .keep_all = T) # keeping only the unique docs by DI or DOI
-rownames(S) <- S$SR # using SR as row names
+
 
 countrydf[which(countrydf$split == "USA"),]
 S <- S[-1316, ]
@@ -237,10 +237,8 @@ tot_countries <- as.data.frame(cbind(
 ## filters out the NA values that appear in the column 
 tot_countries <- unique(tot_countries) %>% filter(!is.na(V1))
 # write_excel_csv(tot_countries, "country_list.xls") # save in xls the country list
-
-country_code_reg <- read_excel(here("Data", ## load the countries, codes and regions 
-                                    "Processed", 
-                                    "country_code_region.xlsx"))
+## load the countries, codes and regions 
+country_code_reg <- read_excel(here("Data", "Processed", "country_code_region.xlsx"))
 
 ## merging 
 country_code_reg <- country_code_reg %>% 
@@ -281,7 +279,7 @@ namebyrow<- as.data.frame(rownames(D))
 D_2filter <-  cbind(namebyrow, au_con_reg)
 
 
-## filtering the columns continent that contains Europe 
+## filtering the columns continet that contains Europe 
 D_2filter <- D_2filter %>% filter(Continent_1 == "Europe" |
                                     Continent_2 == "Europe" |
                                     Continent_3 == "Europe" |
@@ -296,55 +294,20 @@ D_index <- D_2filter$`rownames(D)`
 D <- D[D_index ,]
 
 D[, c(5, 23)] <- lapply(D[, c(5,23)], tolower) # to lower DT and DI
-D <- D %>% replace_with_na_all(condition = ~. == "") # converting "" into NA within the D
-D <- D %>% replace_with_na_all(condition = ~. == "NA") # converting "" into NA within the D
-vis_miss(D)
-col_i <- which(colnames(D) %in% c("SO", "C1", "DE", "ID", "RP", "SC")) # get the column indexes
-D <- D[ , -col_i] # excluding the column indexes from D
-D1_D <- left_join(D, D1_SO, by= "DI", keep= F) # joining the API data with the GUI data
-col_names_M <- colnames(M) # getting the column names of M
-D <- D1_D[, col_names_M] # reorganizing the columns joined in D1_D
 
-D <- metaTagExtraction(D, Field = "SR", sep = ";") # getting the author year journal column
+DW <- anti_join(D, W, by = "DI") 
 
-rownames(D) <- D$SR # using SR as row names
+WD <- rbind(W, DW)
 
+WDS <- anti_join(S, WD, by= "DI")
 
-DW <- anti_join(D, W, by = c("DI", "TI")) # filtering docs that only appear in dimensions and !WOS
-
-WD <- rbind(W, DW) # binding WOS and Dimensions
-
-SDW <- anti_join(S, WD, by= c("DI", "TI")) # filtering docs that only appear in SCOPUS and !WOS & DIM
-
-
-M <-  rbind(WD, SDW) # binding the three data bases
+M <-  rbind(WD, WDS)
 M <- M %>% replace_with_na_all(condition = ~. == "") # converting "" into NA within the D
 M <- M %>% replace_with_na_all(condition = ~. == "NA") # converting "" into NA within the D
 vis_miss(M)
 
-M$AU_CO <- str_replace_all(M$AU_CO, 
-                           "UNITED STATES", 
-                           "USA") # changing UNITED STATES with USA to avoid double counting
-
-M$AU <- str_replace_all(M$AU, 
-                        "VAN DIJK JAGM", 
-                        "VAN DIJK J") # changing VAN DIJK JAGM with VAN DIJK J to avoid double counting
-
-M$AU_UN <- str_replace_all(M$AU_UN,
-                           "UNIVERSITY", 
-                           "UNIV") # changing UNIVERSITY with UNIV to avoid double counting
-
-M[, c(5, 23)] <- lapply(M[, c(5,23)], tolower)
-
-M <-  M %>% distinct(DI, .keep_all = T) # keeping only the unique docs by TI title
-M <-  M %>% distinct(TI, .keep_all = T) # keeping only the unique docs by TI title
-
-M <- M %>% arrange(PY) %>% filter(PY != 2022) # excluding 2022
-
-write_csv(M, file = here("Data", 
-                         "Processed", 
-                         "M_EU.csv")) # writing as CSV to make readable in biblioshiny
-
+M$AU_CO <- str_replace_all(M$AU_CO, "UNITED STATES", "USA")
+M$AU <- str_replace_all(M$AU, "VAN DIJK JAGM", "VAN DIJK J")
 
 
 M_by_PF <- M %>% # dist contains a summary of documents type DT by unique DOI and BN
@@ -354,7 +317,10 @@ M_by_PF <- M %>% # dist contains a summary of documents type DT by unique DOI an
             NA_DI = sum(duplicated(DI))) %>%  # unique titles 
   adorn_totals("row") # total 
 
+M[, c(5, 23)] <- lapply(M[, c(5,23)], tolower)
 
+M <-  M %>% distinct(DI, .keep_all = T) # keeping only the unique docs by TI title
+M <-  M %>% distinct(TI, .keep_all = T) # keeping only the unique docs by TI title
 
 results <- biblioAnalysis(M)
 summary(results, k=20, pause=F, width=130)
@@ -369,9 +335,9 @@ M_by_DT <- M %>% # dist contains a summary of documents type DT by unique DOI an
             TI = n_distinct(TI)) %>%  # unique titles 
   adorn_totals("row") # total 
 
+M <- M %>% arrange(PY) %>% filter(PY != 2022)
 
-
-
+write_csv(M, file = here("Data", "Processed", "M_EU.csv"))
 
 AU_UN <- as.data.frame(gsub("UNIVERSITY OF OXFORD", "UNIV OXFORD", AU_UN))
 

@@ -48,42 +48,7 @@ library(visdat)
 
 ```{r Data loading, warning=FALSE, include=FALSE}
 
-# create a list or a vector with the names of 
-# the .txt files that were downloaded from WoS
 
-#tot_files <- c("wos_1_500.txt", "wos_501_1000.txt", 
-              # "wos_1001_1500.txt", "wos_1501_2000.txt", 
-              # "wos_2001_2500.txt", "wos_2501_3000.txt",
-               #"wos_3001_3337.txt")
-
-wos_1_500 <- read.delim(here("Data", "Raw", "wos_1_500.txt"), header = T, sep = "\t")
-wos_501_1000 <- read.delim(here("Data", "Raw", "wos_501_1000.txt"), header = T, sep = "\t")
-wos_1001_1500 <- read.delim(here("Data", "Raw", "wos_1001_1500.txt"), header = T, sep = "\t")
-wos_1501_2000 <- read.delim(here("Data", "Raw", "wos_1501_2000.txt"), header = T, sep = "\t")
-wos_2001_2500 <- read.delim(here("Data", "Raw", "wos_2001_2500.txt"), header = T, sep = "\t")
-wos_2501_3000 <- read.delim(here("Data", "Raw", "wos_2501_3000.txt"), header = T, sep = "\t")
-wos_3001_3337 <- read.delim(here("Data", "Raw", "wos_3001_3337.txt"), header = T, sep = "\t")
-
-
-tot_wos_3337 <- rbind(wos_1_500, wos_501_1000, 
-               wos_1001_1500, wos_1501_2000, 
-              wos_2001_2500, wos_2501_3000,
-               wos_3001_3337)
-
-write_delim(tot_wos_3337, 
-            file = here("Data", "Processed", "text_m.txt"), 
-            col_names= F, quote =  "none", escape = "none")
-
-M <- convert2df(here("Data", "Processed", "text_m.txt"), 
-                dbsource = "wos", format = "plaintext")
-colnames(M)
-#unique(M$PA)
-
-unique(M$PI)
-unique(M$PA)
-vis_miss(M)
-M %>% 
-head(M$C1)
 
 ```
 
@@ -167,8 +132,8 @@ Descriptive analysis of Article co-citation network characteristics
 
 ```{r Co-citation source network, comment=NA, fig.height=10, fig.width=10}
 M=metaTagExtraction(M,"CR_SO",sep=";")
-NetMatrix <- biblioNetwork(M, analysis = "co-citation", network = "sources", sep = ";")
-net=networkPlot(NetMatrix, n = 50, Title = "Co-Citation Network", type = "auto", size.cex=TRUE, size=15, remove.multiple=FALSE, labelsize=1,edgesize = 10, edges.min=5)
+#NetMatrix <- biblioNetwork(M, analysis = "co-citation", network = "sources", sep = ";")
+net=networkPlot(NetMatrix, n = 30, Title = "Co-Citation Network", type = "auto", size.cex=TRUE, size=10, remove.multiple=FALSE, labelsize=1,edgesize = 10, edges.min=5)
 ```
 
 Descriptive analysis of Journal co-citation network characteristics
