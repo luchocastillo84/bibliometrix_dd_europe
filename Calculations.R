@@ -1,3 +1,39 @@
+
+## table for calculations
+
+M_by_PF <- M %>% # dist contains a summary of documents type DT by unique DOI and BN
+  group_by(PF) %>% # group by document type
+  summarize(count = n(), # summary by count by DT 
+            DI = n_distinct(DI),
+            NA_DI = sum(duplicated(DI))) %>%  # unique titles 
+  adorn_totals("row") # total 
+
+
+
+results <- biblioAnalysis(M)
+summary(results, k=20, pause=F, width=130)
+
+M_by_DT <- M %>% # dist contains a summary of documents type DT by unique DOI and BN
+  group_by(DT) %>% # group by document type
+  dplyr::summarize(count = n(), # summary by count by DT 
+                   DOI = n_distinct(DI), # unique DOI
+                   BN = n_distinct(BN), # unique book number
+                   kw_na = sum(is.na(SO)), # number of NA in DOI
+                   na_SO = sum(is.na(SO)), #  number of NA in BN
+                   TI = n_distinct(TI)) %>%  # unique titles 
+  adorn_totals("row") # total 
+
+
+
+
+
+AU_UN <- as.data.frame(gsub("UNIVERSITY OF OXFORD", "UNIV OXFORD", AU_UN))
+
+M_by_DT <- M %>% # dist contains a summary of documents type DT by unique DOI and BN
+  group_by(PF) %>% # group by document type
+  dplyr::summarize(count = n()) %>%  # unique titles 
+  adorn_totals("row") # total 
+
 # To see what the sep is
 M$CR[1]
 
@@ -10,6 +46,12 @@ CRf <- ldply (CR, data.frame)
 # To obtain the most frequent cited first authors:
 CR <- citations(M, field = "author", sep = ";")
 cbind(CR$Cited[1:10])
+
+
+dfCR <- data.frame(Article=(unlist(CR$Cited))) 
+listCR <- strsplit(as.character(dfCR$Article.CR), ",")
+
+
 
 topAU <- authorProdOverTime(M, k = 10, graph = T)
 
@@ -32,19 +74,166 @@ results <- biblioAnalysis(M)
 summary(results, k=20, pause=F, width=100)
 sum(M$TC) / nrow(M)
 
+AU1_CO <- metaTagExtraction(M, Field = "AU1_CO", sep = ";", aff.disamb = F)
+
+# Most influential authors 
 listAU <- (strsplit(M$AU, ";"))
 nAU <- lengths(listAU)
 df <- data.frame(AU=trimws(unlist(listAU)), 
                  SR=rep(M$SR,nAU), 
                  TC=rep(M$TC, nAU)) 
 
-
 AU <- df %>% 
   group_by(AU) %>% 
-  dplyr::summarise(Total_articles= n(), 
-                   Total_citations= sum(TC)) %>% 
+  dplyr::summarise(Total_citations= sum(TC), 
+                   Total_articles= n()) %>% 
   arrange(desc(Total_citations)) %>%
+  mutate(Citations_per_article =round(Total_citations / Total_articles, 2)) %>% 
   ungroup() 
+
+# Most influential articles 
+
+influ_arti <- M %>% select(AU,PY, TI, TC) %>% arrange(desc(TC)) %>% 
+              mutate(Rank = 1:nrow(M))
+influ_arti <- head(influ_arti[, c(5, 1:4)],5)
+
+# Local most cited articles
+
+CR <- citations(M, field = "article", sep = ";")
+cbind(CR$Cited[1:10])
+dfCR <- head(data.frame(Article=(unlist(CR$Cited))),5)
+
+# Most influential journals 
+
+SO <- M %>% filter(!is.na(SO)) %>%  
+  group_by(SO) %>% 
+  dplyr::summarise(TC = sum(TC), AR= n()) %>%  
+  arrange(desc(TC)) %>% head(10)
+
+# Most productive universities 
+
+vis_miss(M)
+
+auuni_v <- str_replace_all(as.character(M$AU_UN), 
+                          pattern = "; ", 
+                          repl= ";") # convert the AU_CO into a chr vector
+
+auuni_df <- data.frame(univ=auuni_v) # converting the AU_CO vector into df
+auuni_df_u <-  auuni_df %>% 
+  mutate(split = str_split(auuni_v, ";")) %>% # split
+  mutate(split = purrr::map(.$split, ~ unique(.x))) %>% # drop duplicates
+  mutate(split = purrr::map_chr(.$split, ~paste(.x, collapse = ";"))) %>% # recombine
+  select(split)
+
+n_colsu <- max(stringr::str_count(auuni_df_u$split, ";")) 
+colmnam <- paste("univ_", 1:n_colsu, sep ="")
+auuni_dfs <- separate(auuni_df_u, 
+                     split, 
+                     into = colmnam, 
+                    sep = ";",
+                     remove = TRUE) %>% replace_with_na_all(condition = ~. == "NA")
+
+auuni_1df <- auuni_dfs %>% 
+  filter(!is.na(univ_1)) %>% # filtering by NA country_2 to get SCP
+  select(univ_1) %>% 
+  group_by(univ_1) %>% 
+  dplyr::summarise(tot_docs= n()) %>% 
+  arrange(desc(tot_docs))
+
+
+# Most productive countries
+# Single country publications
+head(M$AU_CO)
+auco_v <- str_replace_all(as.character(M$AU_CO), # convert the AU_CO into a chr vector
+                          pattern = "; ", # deleting spaces between string elements
+                          repl= ";") 
+
+auco_df <- data.frame(country=auco_v) # converting the AU_CO vector into df
+auco_df_u <-  auco_df %>% 
+  mutate(split = str_split(auco_v, ";")) %>% # split
+  mutate(split = purrr::map(.$split, ~ unique(.x))) %>% # drop duplicates
+  mutate(split = purrr::map_chr(.$split, ~paste(.x, collapse = ";"))) %>% # recombine
+  select(split)
+
+n_cols <- max(stringr::str_count(auco_df_u$split, ";")) 
+colmna <- paste("country_", 1:n_cols, sep ="")
+auco_dfs <- separate(auco_df_u, 
+                     split, 
+                     into = colmna, 
+                     sep = ";",
+                     remove = TRUE)
+
+auco_1df <- auco_dfs %>% 
+            filter(is.na(country_2)) %>% # filtering by NA country_2 to get SCP
+            select(country_1) %>% 
+            group_by(country_1) %>% 
+            dplyr::summarise(tot_docs= n()) %>% 
+            arrange(desc(tot_docs))
+
+
+# Multiple country publications
+auco_2df <- auco_dfs %>% 
+  select(country_2) %>% 
+  group_by(country_2) %>% 
+  drop_na(country_2) %>%
+  dplyr::summarise(tot_docs= n()) %>% 
+  arrange(desc(tot_docs))
+
+auco_3df <- auco_dfs %>% 
+  select(country_3) %>% 
+  group_by(country_3) %>% 
+  drop_na(country_3) %>%
+  dplyr::summarise(tot_docs= n()) %>% 
+  arrange(desc(tot_docs)) %>% 
+  rbind(setNames(auco_2df, names(auco_3df)))
+
+auco_4df <- auco_dfs %>%
+  select(country_4) %>% 
+  group_by(country_4) %>% 
+  drop_na(country_4) %>%
+  dplyr::summarise(tot_docs= n()) %>% 
+  arrange(desc(tot_docs)) %>% 
+  rbind(setNames(auco_3df, names(auco_4df)))
+
+auco_5df <- auco_dfs %>%
+  select(country_5) %>% 
+  group_by(country_5) %>% 
+  drop_na(country_5) %>%
+  dplyr::summarise(tot_docs= n()) %>% 
+  arrange(desc(tot_docs)) %>% 
+  rbind(setNames(auco_4df, names(auco_5df)))
+
+auco_6df <- auco_dfs %>%
+  select(country_6) %>% 
+  group_by(country_6) %>% 
+  drop_na(country_6) %>%
+  dplyr::summarise(tot_docs= n()) %>% 
+  arrange(desc(tot_docs)) %>% 
+  rbind(setNames(auco_5df, names(auco_6df)))
+
+auco_7df <- auco_dfs %>%
+  select(country_7) %>% 
+  group_by(country_7) %>% 
+  drop_na(country_7) %>%
+  dplyr::summarise(tot_docs= n()) %>% 
+  arrange(desc(tot_docs)) %>% 
+  rbind(setNames(auco_6df, names(auco_7df)))
+
+auco_mcp <- auco_7df %>% 
+            group_by(country_7) %>% 
+            dplyr::summarise(tot_docs= sum(tot_docs)) %>% 
+            arrange(desc(tot_docs))
+
+
+# Table SCP and MCP and total publications by country          
+count_prod <- full_join(auco_1df, 
+                        auco_mcp, 
+                        by= c("country_1" = "country_7")) %>% 
+              replace(is.na(.), 0) %>% 
+              mutate(tot_docs = tot_docs.x + tot_docs.y) %>% 
+              rename( "scp" = tot_docs.x, "mcp" = tot_docs.y) %>% 
+              arrange(desc(tot_docs)) %>% 
+              head(10)
 
 
 
@@ -70,8 +259,8 @@ M %>% group_by(PY) %>%
                                                          color = "blue")
 
 M %>% group_by(PY) %>% 
-  summarise(totd = n()) %>%  
-  ggplot(aes(x= PY, y= totd)) + geom_line() + geom_vline(xintercept = c(2007, 2014), 
+      summarise(totd = n()) %>%  
+      ggplot(aes(x= PY, y= totd)) + geom_line() + geom_vline(xintercept = c(2007, 2014), 
                                                          linetype = "dotted",
                                                          color = "blue")
 
@@ -86,16 +275,17 @@ CAGR<-as.numeric(round(((Y[ny]/Y[1])^(1/(ny-1))-1)*100,2))
 sources <- n_distinct(M$SO)
 n_docs <- nrow(M)
 avg_cite <- round(sum(M$TC)/nrow(M), 2)
-arti <- as_vector(count(M[which(M$DT=='article'), 5]) + 
-                    count(M[which(M$DT=='review'), 5]) )
 
-bchap <- as_vector(count(M[which(M$DT=='book chapter'), 5]) + 
-                     count(M[which(M$DT=='article; book chapter'), 5]) )
+arti <- as_vector(nrow(M[M$DT=='article', ]) + 
+                  nrow(M[M$DT=='review', ])) 
 
-procee <- as_vector(count(M[which(M$DT=='proceedings paper'), 5]) + 
-                     count(M[which(M$DT=='article; proceedings paper'), 5]) )
+bchap <- as_vector(nrow(M[M$DT=='book chapter',]) + 
+                   nrow(M[M$DT=='article; book chapter',]))
 
-confe <- as_vector(count(M[which(M$DT=='conference paper'), 5]) )
+procee <- as_vector(nrow(M[M$DT=='proceedings paper',]) + 
+                      nrow(M[M$DT=='article; proceedings paper', ]))
+
+confe <- as_vector(nrow(M[M$DT=='conference paper', ]))
 
 arti+ bchap+ procee + confe
 
@@ -115,16 +305,17 @@ CAGR1<-as.numeric(round(((Y1[ny1]/Y1[1])^(1/(ny1-1))-1)*100,2))
 sources1 <- n_distinct(M_1p$SO)
 n_docs1 <- nrow(M_1p)
 avg_cite1 <- round(sum(M_1p$TC)/nrow(M_1p), 2)
-arti1 <- as_vector(count(M_1p[which(M_1p$DT=='article'), 5]) + 
-                    count(M_1p[which(M_1p$DT=='review'), 5]) )
 
-bchap1 <- as_vector(count(M_1p[which(M_1p$DT=='book chapter'), 5]) + 
-                     count(M_1p[which(M_1p$DT=='article; book chapter'), 5]) )
+arti1 <- as_vector(nrow(M_1p[M_1p$DT=='article', ]) + 
+                    nrow(M_1p[M_1p$DT=='review', ])) 
 
-procee1 <- as_vector(count(M_1p[which(M_1p$DT=='proceedings paper'), 5]) + 
-                      count(M_1p[which(M_1p$DT=='article; proceedings paper'), 5]) )
+bchap1 <- as_vector(nrow(M_1p[M_1p$DT=='book chapter',]) + 
+                     nrow(M_1p[M_1p$DT=='article; book chapter',]))
 
-confe1 <- as_vector(count(M_1p[which(M_1p$DT=='conference paper'), 5]) )
+procee1 <- as_vector(nrow(M_1p[M_1p$DT=='proceedings paper',]) + 
+                      nrow(M_1p[M_1p$DT=='article; proceedings paper', ]))
+
+confe1 <- as_vector(nrow(M_1p[M_1p$DT=='conference paper', ]))
 
 "Period 1" <- c(tot_period1, sources1, CAGR1,
            avg_cite1, n_docs1, arti1, bchap1, procee1, confe1 )
@@ -134,9 +325,10 @@ nAU1 <- lengths(listAU1)
 df1 <- data.frame(AU=trimws(unlist(listAU1)), SR=rep(M_1p$SR,nAU1), TC=rep(M_1p$TC, nAU1)) 
 AU1 <- df1 %>% 
   group_by(AU) %>% 
-  dplyr::summarise(Total_articles= n(), 
-                   Total_citations= sum(TC)) %>% 
+  dplyr::summarise(Total_citations= sum(TC), 
+                   Total_articles= n()) %>% 
   arrange(desc(Total_citations)) %>%
+  mutate(Citations_per_article =round(Total_citations / Total_articles, 2)) %>% 
   ungroup() 
 
 m_cited <- head(order(-M_1p$TC), 10)
@@ -156,16 +348,17 @@ CAGR2<-as.numeric(round(((Y2[ny2]/Y2[1])^(1/(ny1-1))-1)*100,2))
 sources2 <- n_distinct(M_2p$SO)
 n_docs2 <- nrow(M_2p)
 avg_cite2 <- round(sum(M_2p$TC)/nrow(M_2p), 2)
-arti2 <- as_vector(count(M_2p[which(M_2p$DT=='article'), 5]) + 
-                     count(M_2p[which(M_2p$DT=='review'), 5]) )
 
-bchap2 <- as_vector(count(M_2p[which(M_2p$DT=='book chapter'), 5]) + 
-                      count(M_2p[which(M_2p$DT=='article; book chapter'), 5]) )
+arti2 <- as_vector(nrow(M_2p[M_2p$DT=='article', ]) + 
+                    nrow(M_2p[M_2p$DT=='review', ])) 
 
-procee2 <- as_vector(count(M_2p[which(M_2p$DT=='proceedings paper'), 5]) + 
-                       count(M_2p[which(M_2p$DT=='article; proceedings paper'), 5]) )
+bchap2 <- as_vector(nrow(M_2p[M_2p$DT=='book chapter',]) + 
+                     nrow(M_2p[M_2p$DT=='article; book chapter',]))
 
-confe2 <- as_vector(count(M_2p[which(M_2p$DT=='conference paper'), 5]) )
+procee2 <- as_vector(nrow(M_2p[M_2p$DT=='proceedings paper',]) + 
+                      nrow(M_2p[M_2p$DT=='article; proceedings paper', ]))
+
+confe2 <- as_vector(nrow(M_2p[M_2p$DT=='conference paper', ]))
 
 "Period 2" <- c(tot_period2, sources2, CAGR2,
             avg_cite2, n_docs2, arti2, bchap2, procee2, confe2 )
@@ -175,9 +368,10 @@ nAU2 <- lengths(listAU2)
 df2 <- data.frame(AU=trimws(unlist(listAU2)), SR=rep(M_2p$SR,nAU2), TC=rep(M_2p$TC, nAU2)) 
 AU2 <- df2 %>% 
   group_by(AU) %>% 
-  dplyr::summarise(Total_articles= n(), 
-                   Total_citations= sum(TC)) %>% 
+  dplyr::summarise(Total_citations= sum(TC), 
+                   Total_articles= n()) %>% 
   arrange(desc(Total_citations)) %>%
+  mutate(Citations_per_article =round(Total_citations / Total_articles, 2)) %>% 
   ungroup() 
 
 m_cited <- head(order(-M_2p$TC), 10)
@@ -198,16 +392,17 @@ CAGR3<-as.numeric(round(((Y3[ny3]/Y3[1])^(1/(ny3-1))-1)*100,2))
 sources3 <- n_distinct(M_3p$SO)
 n_docs3 <- nrow(M_3p)
 avg_cite3 <- round(sum(M_3p$TC)/nrow(M_3p), 2)
-arti3 <- as_vector(count(M_3p[which(M_3p$DT=='article'), 5]) + 
-                     count(M_3p[which(M_3p$DT=='review'), 5]) )
 
-bchap3 <- as_vector(count(M_3p[which(M_3p$DT=='book chapter'), 5]) + 
-                      count(M_3p[which(M_3p$DT=='article; book chapter'), 5]) )
+arti3 <- as_vector(nrow(M_3p[M_3p$DT=='article', ]) + 
+                    nrow(M_3p[M_3p$DT=='review', ])) 
 
-procee3 <- as_vector(count(M_3p[which(M_3p$DT=='proceedings paper'), 5]) + 
-                       count(M_3p[which(M_3p$DT=='article; proceedings paper'), 5]) )
+bchap3 <- as_vector(nrow(M_3p[M_3p$DT=='book chapter',]) + 
+                     nrow(M_3p[M_3p$DT=='article; book chapter',]))
 
-confe3 <- as_vector(count(M_3p[which(M_3p$DT=='conference paper'), 5]) )
+procee3 <- as_vector(nrow(M_3p[M_3p$DT=='proceedings paper',]) + 
+                      nrow(M_3p[M_3p$DT=='article; proceedings paper', ]))
+
+confe3 <- as_vector(nrow(M_3p[M_3p$DT=='conference paper', ]))
 
 "Period 3" <- c(tot_period3, sources3, CAGR3,
             avg_cite3, n_docs3, arti3, bchap3, procee3, confe3 )
@@ -215,14 +410,20 @@ confe3 <- as_vector(count(M_3p[which(M_3p$DT=='conference paper'), 5]) )
 tot_docs <- data.frame(Details, `Period 1`, `Period 2`, `Period 3`, Total)
 
 
+
+
+### Authors 
 listAU3 <- (strsplit(M_3p$AU, ";"))
 nAU3 <- lengths(listAU3)
-df3 <- data.frame(AU=trimws(unlist(listAU3)), SR=rep(M_3p$SR,nAU3), TC=rep(M_3p$TC, nAU3)) 
+df3 <- data.frame(AU=trimws(unlist(listAU3)), 
+                  SR=rep(M_3p$SR,nAU3), 
+                  TC=rep(M_3p$TC, nAU3)) 
 AU3 <- df3 %>% 
   group_by(AU) %>% 
-  dplyr::summarise(Total_articles= n(), 
-                   Total_citations= sum(TC)) %>% 
+  dplyr::summarise(Total_citations= sum(TC), 
+                   Total_articles= n()) %>% 
   arrange(desc(Total_citations)) %>%
+  mutate(Citations_per_article =round(Total_citations / Total_articles, 2)) %>% 
   ungroup() 
 
 m_cited <- head(order(-M_3p$TC), 10)

@@ -16,6 +16,7 @@ library(janitor)
 library(naniar)
 library(dimensionsR)
 library(jsonlite)
+library(purrr)
 
 #### Web of Science ####
 
@@ -202,8 +203,9 @@ au_country <- as.data.frame(au_countries) # converting the AU_CO vector into df
 ## selecting the unique values such as USA;USA... of AU_CO for each document row 
 countrydf <-  au_country %>% 
   mutate(split = str_split(au_countries, "; ")) %>% # split
-  mutate(split = map(.$split, ~ unique(.x))) %>% # drop duplicates
-  mutate(split = map_chr(.$split, ~paste(.x, collapse = ";"))) # recombine
+  mutate(split = purrr::map(.$split, ~ unique(.x))) %>% # drop duplicates
+  mutate(split = purrr::map_chr(.$split, ~paste(.x, collapse = ";"))) # recombine
+
 
 country_split <- as.data.frame(countrydf$split) ## converting the split vector into df
 ## split the vector AU_CO into a df
@@ -334,50 +336,29 @@ M$AU_UN <- str_replace_all(M$AU_UN,
                            "UNIVERSITY", 
                            "UNIV") # changing UNIVERSITY with UNIV to avoid double counting
 
+M$AU_UN <- str_replace_all(M$AU_UN,
+                           "UNIV OF", 
+                           "UNIV")
+
+M$AU_UN <- str_replace_all(M$AU_UN,
+                           "MILANO", 
+                           "MILAN")
+
 M[, c(5, 23)] <- lapply(M[, c(5,23)], tolower)
 
-M <-  M %>% distinct(DI, .keep_all = T) # keeping only the unique docs by TI title
+M <-  M %>% distinct(DI, .keep_all = T) # keeping only the unique docs by DOI
 M <-  M %>% distinct(TI, .keep_all = T) # keeping only the unique docs by TI title
+M <-  M %>% distinct(SR, .keep_all = T) # keeping only the unique docs by SR title
+
 
 M <- M %>% arrange(PY) %>% filter(PY != 2022) # excluding 2022
 
 write_csv(M, file = here("Data", 
                          "Processed", 
                          "M_EU.csv")) # writing as CSV to make readable in biblioshiny
+vis_miss(M)
 
 
 
-M_by_PF <- M %>% # dist contains a summary of documents type DT by unique DOI and BN
-  group_by(PF) %>% # group by document type
-  summarize(count = n(), # summary by count by DT 
-            DI = n_distinct(DI),
-            NA_DI = sum(duplicated(DI))) %>%  # unique titles 
-  adorn_totals("row") # total 
-
-
-
-results <- biblioAnalysis(M)
-summary(results, k=20, pause=F, width=130)
-
-M_by_DT <- M %>% # dist contains a summary of documents type DT by unique DOI and BN
-  group_by(DT) %>% # group by document type
-  dplyr::summarize(count = n(), # summary by count by DT 
-            DOI = n_distinct(DI), # unique DOI
-            BN = n_distinct(BN), # unique book number
-            kw_na = sum(is.na(SO)), # number of NA in DOI
-            na_SO = sum(is.na(SO)), #  number of NA in BN
-            TI = n_distinct(TI)) %>%  # unique titles 
-  adorn_totals("row") # total 
-
-
-
-
-
-AU_UN <- as.data.frame(gsub("UNIVERSITY OF OXFORD", "UNIV OXFORD", AU_UN))
-
-M_by_DT <- M %>% # dist contains a summary of documents type DT by unique DOI and BN
-  group_by(PF) %>% # group by document type
-  dplyr::summarize(count = n()) %>%  # unique titles 
-  adorn_totals("row") # total 
 
 

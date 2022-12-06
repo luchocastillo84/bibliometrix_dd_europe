@@ -30,24 +30,13 @@ library(visdat)
 
 ```
 
-# Bibliographic Collection
 
-**Data source**: Clarivate Analytics Web of Science (<http://apps.webofknowledge.com>)
-
-**Data format**: Plaintext
-
-**Query**: SO = "Journal of Informetrics"
-
-**Timespan**: 2007-2017
-
-**Document Type**: Articles, letters, review and proceedings papers
-
-**Query data**: May, 2018
 
 # Data Loading and Converting
 
 ```{r Data loading, warning=FALSE, include=FALSE}
-
+here()
+MM <- read_csv(here("Data", "Processed", "M_EU.csv"))
 
 
 ```

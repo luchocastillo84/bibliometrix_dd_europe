@@ -28,7 +28,8 @@ query <- dsQueryBuild(item = "publications",
                                         "isbn",
                                         "reference_ids",
                                         "referenced_pubs",
-                                        "categories"))
+                                        "categories",
+                                        "funders"))
 
 
 res <- dsApiRequest(token = token, query = query, limit = 0)
@@ -39,7 +40,7 @@ D_api <- dsApiRequest(token = token, query = query, step = 500, limit = res$tota
 
 D1 <- dsApi2df(D_api)
 D[, c(26)] <- lapply(D[, c(26)], tolower)
-D1_SO <- D1 %>% select(DI, SO, C1, DE, ID, RP, SC)
+D1_SO <- D1 %>% select(DI, SO, C1, DE, ID, RP, SC, FU)
 D1_SO <- D1_SO %>% replace_with_na_all(condition = ~. == "") # converting "" into NA within the D
 D1_SO <- D1_SO %>% replace_with_na_all(condition = ~. == "NA,NA") # converting "" into NA within the D
 
