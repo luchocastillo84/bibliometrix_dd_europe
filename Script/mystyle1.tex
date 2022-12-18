@@ -1,0 +1,24 @@
+% Position a logo in beamer
+\documentclass{beamer}
+% Theme choice:
+\usetheme{AnnArbor}
+\usecolortheme{beaver}
+% Title page details: 
+\title{} 
+\author{}
+\date{\today}
+% Load TikZ
+\usepackage{tikz}
+\titlegraphic { 
+\begin{tikzpicture}[overlay,remember picture]
+\node[left=0.2cm] at (current page.30){
+    \includegraphics[width=3cm]{UniUrb-logo.png}
+};
+\end{tikzpicture}
+}
+\begin{document}
+% Title page frame
+\begin{frame}
+    \titlepage 
+\end{frame}
+\end{document}

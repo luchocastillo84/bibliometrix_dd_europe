@@ -290,7 +290,7 @@ cr_dfs <- separate(dfCR, # create a df with the local CR
           rename("AU"= field1,
                  "PY"= field2,
                  "SO"= field3,
-                 "Total PD"= Article.Freq)
+                 "Total LC"= Article.Freq)
 
 
 write_csv(influ_arti_3p, file = here("Data", 

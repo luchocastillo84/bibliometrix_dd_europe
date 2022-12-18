@@ -272,7 +272,7 @@ M2 <- convert2df(here("Data", "Raw", "dim_1_2347.csv"),
 
 # trying to connect the rsopus packages with the Scopus API but
 # there is a authentication error 
-Elsevier_API = "abb3c9ab7a77484fbc524a4b240e8199"
+Elsevier_API = "4d6189c9319472288662446281dffa1c"
 hdr = inst_token_header(token)
 hdr = inst_token_header(token)
 res = author_df(last_name = "Castillo Tellez", first_name = "Luis Carlos", 
@@ -379,8 +379,9 @@ p <- lapply(df2, str_split( ";"))
 unique(df2)
 
 # Creating a vector with two files downloaded by the Web of Science data base
-dim_file <- c("dim_1_1467.csv", 
-              "dim_1468_3108.csv")
+dim_file <- c("dim_131222_1_882cr.csv",
+              "dim_131222_1_1265cr.csv",
+              "dim_131222_1_1551cr.csv")
 dim_500 <- "dim_500.csv"
 
 # Converting the data into a data frame readable in the bibliometrix package
@@ -390,7 +391,7 @@ raw_D <- convert2df(here("Data", # raw data frame
                     dbsource = "dimensions", 
                     format = "csv")
 
-D <- convert2df(here("Data", # raw data frame 
+Dn <- convert2df(here("Data", # raw data frame 
                      "Raw", 
                      dim_file), 
                 dbsource = "dimensions", 
@@ -585,3 +586,100 @@ knitr::kable(wos_look,
 
 min(as.numeric(MM$PY), na.rm = F)
 min(MM$PY)
+
+
+
+string <- "HUGGINS R, 2002, LOCAL ECON"
+parts <- strsplit(string, ", ")[[1]]
+result <- paste(parts[1], parts[2], sep=", ")
+result
+
+string <- "VAN DIJK J.A. G.M, 2005, DEEPENING DIVIDE INE, DOI DOI 10.1080/15205430701528655"
+# Replace "VAN DIJK J.A. G.M" with "VAN DIJK J", ignoring case
+string <- gsub("(?i)VAN DIJK J.A. G.M", "VAN DIJK J", string)
+
+# Print the modified string
+print(string)
+
+results <- sub(pattern = ".", replacement = "", 
+                            x = string, fixed = TRUE, perl = TRUE, useBytes = FALSE)
+string <-  sub(".*,", "", string)
+string
+
+topic <-   which(grepl("van dijk", all_isi$AU, ignore.case = TRUE))
+m_cited <- head(order(-M$TC), 10)
+
+van <- CRsplit[topic,]
+
+van$ref <- str_replace_all(van$ref, 
+                        "^VAN DIJK J\\..?", 
+                        "VAN DIJK J")
+i <- topic
+toJSON(all_isi[i, c(1)], pretty= T)
+
+
+string <- "VAN DIJK J.A. G.M"
+
+# Replace the string "VAN DIJK J.A. G.M" with "VAN DIJK J" using a regular expression
+CR$ref <- sub("^VAN DIJK J\\..*", "VAN DIJK J", CR$ref)
+
+print(string)  # Output: "VAN DIJK J"
+
+
+v <- "VAN DIJK J.A. G.M, 2005, DEEPENING DIVIDE INE, DOI DOI 10.1080/15205430701528655"
+extract_first_two <- function(v) {
+  split_v <- unlist(strsplit(v , ","))
+  first <- sub("^VAN DIJK J\\..*", "VAN DIJK J", v)
+  first_two <- split_v[2:4]
+  paste(first, first_two, collapse = ",")
+}
+
+cr_ncols <- max(stringr::str_count(CR$ref, ",")) 
+
+cr_colmn <- paste("field", 1:ncols, sep ="") # create and paste the name of the colums
+
+CRsplit <-
+  tidyr::separate(
+    data = CR,
+    col = ref,
+    sep = ",",
+    into = colmn,
+    remove = T
+  )
+
+van <- CRsplit[topic,]
+# "^VAN DIJK J\\S*"
+
+
+
+
+van$field1 <- str_replace_all(van$field1, "VAN DIJK", "VAN DIJK J") # this worked
+van$field1 <- sub("VAN DIJK\\s+J.*$", "VAN DIJK J", van$field1) # this worked
+van$field1 <- str_replace_all(van$field1, "BUREAU", "") # this worked
+
+CRpaste <- data.frame(paste())
+
+
+df <- data.frame(col1 = c("a", "b", "c"), col2 = c(" ", "e", "f"), col3 = c("g", "h", "i"))
+
+# Paste all columns together
+df$pasted <- apply(df, 1, function(x) paste(x, collapse = ","))
+
+df
+
+
+string <- "INTRONA LD, 2000, INF SOC"
+
+# Use the str_extract function from stringr to extract the desired string using a regex pattern
+result <- str_extract(string, "^[^,]*")
+
+# Print the result
+print(result)
+
+
+CRsco <- CRsco %>% filter(!grepl("^[(0-9]", CRsco$ref))
+
+out <- which(grepl("^\\([0-9]{4}\\)[^ ]", CRsco$AU))
+
+
+

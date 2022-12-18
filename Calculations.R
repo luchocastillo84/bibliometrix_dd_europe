@@ -237,16 +237,19 @@ count_prod <- full_join(auco_1df,
 
 
 
-topic <-   which(grepl("", M$AB, ignore.case = TRUE))
+topic <-   which(grepl("", CRsco$ref, ignore.case = TRUE))
 m_cited <- head(order(-M$TC), 10)
 # 10  219 1173 1355 1580 1714 corporate 
 # 556  618 1024 1044 1120 1176 1231 1361 1414 1487 1573 1597 1648 1723 1860 business
 # 308  379r  556  593  999 1006 1189 1573 1580 1600 1679 1874 firms
 
 i <- topic
-toJSON(M[i, c(2, 1, 3, 17, 13, 6, 8, 12, 22, 29, 23)], pretty= T)
-
+toJSON(all_isi[i, c(2, 1, 3, 17, 14,25, 13, 6, 8, 12, 22, 29, 23)], pretty= T)
+toJSON(M[i, c(11)], pretty= T)
 # delete this doi 10.1145/1242572.1242583
+# 10.1108/073788309
+# c("10.1145/1242572.1242583", "10.1108/073788309",
+#  )
 
 
 
@@ -441,9 +444,131 @@ i <- 1450
 toJSON(M[i, c(2, 1, 3, 17, 13, 6, 8, 12, 22, 29, 23, 11)], pretty= T)
 
 ISI <- M %>% filter(DB == "ISI")
+ISI$CR[1000]
 SCOPUS <- M %>% filter(DB == "SCOPUS")
+SCOPUS$CR[8]
 
 
 CRisi <- citations(ISI, field = "article", sep = ";")
 CRsco <- citations(SCOPUS, field = "article", sep = ";")
+
+
+all_isi <- m_bdf
+all_isi <- m_bdf %>% filter(PF %in% c("WOS"))
+all_isi$CR[400]
+all_isi$DB <- str_replace_all(all_isi$DB,
+                              "SCOPUS", 
+                              "ISI")
+m_bdf <- convert2df(here("Data",  # processed data frame for bibliometrics 37 columns
+                         "Processed", 
+                         "M_EU.csv"),
+                    dbsource = "scopus", 
+                    format = "csv")
+
+histResults <- histNetwork(m_bdf, sep = ";")
+
+WLCR <- cocMatrix(M, "LCR", sep = ";")
+
+
+results <- biblioAnalysis(M)
+summary(results, k=20, pause=F, width=100)
+
+all_isi <- m_bdf
+all_isi <- m_bdf %>% filter(PF %in% c("WOS"))
+all_isi$CR[400]
+
+all_isi = all_isi[order(all_isi$PY), ]
+all_isi$Paper <- 1:nrow(all_isi)
+all_isi_orig <- all_isi
+all_isi$nLABEL <- 1:nrow(all_isi)
+
+
+CR <- strsplit(all_isi$CR, split = ";")
+
+CR <- lapply(seq_along(CR), function(i) {
+  l <- data.frame(ref = CR[[i]],
+                  paper = i,
+                  stringsAsFactors = FALSE)})
+
+CR <- (do.call(rbind, CR))
+
+CR$DI <-
+  trimws(unlist(lapply(
+    strsplit(CR$ref, 'DOI', fixed = TRUE), '[', 2
+  )))
+CR$DI[is.na(CR$DI) | CR$DI=="NA"] <- ""
+CR$AU <-
+  trimws(gsub("[ ]{2,}", "", (gsub(
+    "\\.", " ", unlist(lapply(strsplit(CR$ref, ',', fixed = TRUE), '[', 1))
+  ))))
+
+CR$PY <-
+  trimws(unlist(lapply(strsplit(CR$ref, ',', fixed = TRUE), '[', 2)))
+CR$SO <-
+  trimws(unlist(lapply(strsplit(CR$ref, ',', fixed = TRUE), '[', 3)))
+CR$SR <- paste(CR$AU, ", ", CR$PY, ", ", CR$SO, sep = "")
+
+all_isi$LABEL <- paste(all_isi$SR_FULL)
+
+CR$LABEL <- paste(CR$SR) 
+
+
+L <- left_join(all_isi,CR,by=c("LABEL"))
+
+L <- L[!is.na(L$paper),]
+L$CITING <- all_isi$LABEL[L$paper]
+L$nCITING <- all_isi$nLABEL[L$paper]
+L$CIT_PY <- all_isi$PY[L$paper]
+
+LCS <- L %>% group_by(.data$nLABEL) %>%
+  summarize(LABEL = .data$LABEL[1],
+            n = length(.data$nLABEL)) %>%
+  as.data.frame()
+
+all_isi$LCS <- 0
+all_isi[LCS$nLABEL, "LCS"] <- LCS$n
+all_isi_orig$LCS <- all_isi$LCS
+
+histData <- all_isi[c("LABEL","TI","DE","ID","PY","LCS","TC")]
+names(histData) <- c("Paper","Title","Author_Keywords","KeywordsPlus","Year","LCS","GCS")
+
+CITING <- L %>% group_by(.data$CITING) %>%
+  summarize(
+    LCR = paste(.data$LABEL, collapse = ";"),
+    PY = .data$CIT_PY[1],
+    Paper = .data$paper[1]
+  ) %>%
+  ungroup() %>%
+  arrange(.data$PY) %>% as.data.frame()
+
+all_isi_orig$LCR <- NA
+all_isi_orig$LCR[CITING$Paper] <- CITING$LCR
+all_isi_orig$LABEL <- all_isi$LABEL
+all_isi <- all_isi_orig
+
+st<-i<-0
+while(st==0){
+  ind <- which(duplicated(all_isi$LABEL))
+  if (length(ind)>0){
+    i <- i+1
+    all_isi$LABEL[ind]=paste0(all_isi$LABEL[ind],
+                              "-",letters[i],sep="")}else{st <- 1}}
+row.names(all_isi) <- all_isi$LABEL  
+
+WLCR <- cocMatrix(all_isi, "LCR", sep = ";")
+missingLABEL <- setdiff((M$LABEL), colnames(WLCR))
+colLab <- c(colnames(WLCR), missingLABEL)
+WLCR <- cbind(WLCR, matrix(0, nrow(WLCR), length(missingLABEL)))
+WLCR <- as.data.frame(as.matrix(WLCR), stringsAsFactors = FALSE)
+colnames(WLCR) <- colLab
+LABEL <- (row.names(WLCR))
+WLCR <- as.matrix(WLCR[LABEL])
+  
+NetMatrix <- biblioNetwork(data.frame(M), analysis = "collaboration",
+                           network = "countries", sep = ";")
+
+
+
+
+
 

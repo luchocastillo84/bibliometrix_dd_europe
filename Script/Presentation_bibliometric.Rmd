@@ -1,0 +1,267 @@
+---
+title: 'Bibliometric Analysis of European Research on Digital Divide: An Exploration of the Corporate Landscape'
+author: "Luis Carlos Castillo"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  beamer_presentation:
+    includes:
+      in_header: mystyle.tex
+  slidy_presentation: default
+  powerpoint_presentation: default
+institute: |
+  | University of Urbino
+  | Ph.D. Program in Global Studies
+editor_options:
+  markdown:
+    wrap: 72
+bibliography: references.bib
+header-includes:
+  - \AtBeginEnvironment{CSLReferences}{\tiny}
+biblio-style: apalike
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = F, message = F )
+kableExtra.auto_format = FALSE
+knitr.table.format = "latex"
+knitr::opts_knit$set(kable.force.latex = TRUE)
+```
+
+```{r Loading packages, include=FALSE}
+library(tidyverse)
+library(devtools)
+library(here)
+library(bibliometrix)
+library(stringr)
+library(readr)
+library(visdat)
+library(stringr)
+library(dplyr)
+library(readxl)
+library(janitor)
+library(ggplot2)
+library(gridExtra)
+options(kableExtra.latex.load_packages = FALSE)
+library(kableExtra)
+library(rmarkdown)
+library(tidytext)
+library(knitr)
+library(qwraps2)
+library(dplyr)
+library(tables)
+library(bibtex)
+
+
+```
+
+# Content I
+
+1.  Motivation
+
+2.  Objectives
+
+3.  Digital Divide Overview
+
+4.  Data
+
+5.  Bibliometric Analysis
+
+6.  Performance Analysis
+
+    1.  Publications Vs Citations
+    2.  Authors
+    3.  Publications
+    4.  Journals
+    5.  Countries
+
+# Content II
+
+7.  Science Mapping
+
+    1.  Citations Analysis
+    2.  Co-citations Analysis
+    3.  Bibliographic Coupling
+    4.  Co-word Analysis
+
+# 1. Motivation
+
+-   The ubiquitous use of digital technologies has transformed many
+    aspects of society and the economy, bringing potential benefits and
+    drawbacks.
+
+-   The Digital Europe program and the agenda to bridge the digital
+    divide.
+
+-   The few studies using the bibliometric method focus mainly on health
+    sciences, computer science, and technology.
+
+-   Data availability from three platforms containing references and
+    citations from academic journals has stimulated this research
+    initiative.
+
+# 2. Objectives
+
+-   Understand the intellectual structure within the domain of the
+    digital divide.
+
+-   Examine European research components' intellectual interactions,
+    structural connections, and thematic relationships.
+
+-   Explore the corporate digital divide among the collected corpus and
+    identify trends and patterns within the literature.
+
+# 3. The Digital Divide Overview I
+
+-   The digital divide is also known as the digital gap, inequalities,
+    or disparities.
+-   The interaction with other existing gaps such as income, education,
+    gender, generational, and regional, among others [@ragnedda2017].
+-   The evolution of the concept has pointed out the phenomenon's
+    complexity and the effects on the different layers of society and
+    the economy [@vandijk2003; @ragnedda2017; @shakina2021].
+
+# 3. The Digital Divide Overview II
+
+-   The are four leading theories of the digital divide [@pick2016]:
+    -   Adoption and Diffusion Theory (ADT)
+    -   Van Dijk's Model of Digital Technology Access
+    -   Unified Theory of Acceptance and Use Technology (UTAUT)
+    -   Spatially Aware Technology Utilization Model (SATUM)
+
+# 3. The Digital Divide Overview III
+
+-   Waves of Research
+    -   The first wave: Physical access to technology -\> possession of
+        computers and access to the internet [@vandijk2003].
+
+    -   The second wave: Usage of digital technologies and skills
+        [@vandijk2006].
+
+    -   The third wave: There needs to be more consensus among the
+        scientific community while addressing the third-level digital
+        divide:
+
+        -   Sociological perspective [@ragnedda2017].
+
+        -   Disparities in the ability to transform internet engagement
+            into favorable offline outcomes [@vandeursen2015].
+
+        -   The corporate digital divide [@shakina2021].
+
+# 4. Data
+
+```{r Total docs, include=F}
+MM <- read_csv(here("Data", "Processed", "M_EU.csv"))
+```
+
+-   Specific search on the digital divide merging data from the Web of
+    Science, Scopus, and Dimensions platforms.
+-   Authors with European affiliations within the business, management,
+    economics, technology, and computer science disciplines were
+    included
+-   After data cleaning, a total of `r nrow(MM)` unique documents from
+    2000 to 2021 were incorporated.
+-   The sample includes articles, book chapters, conferences, and
+    proceedings.
+-   The R programming language environment will be used during the data
+    processing stage.
+
+# 5. Bibliometric Analysis I
+
+Following @donthu2021 and @Aria2017 bibliometric analysis:
+
+-   Is a methodology that applies quantitative techniques to
+    bibliographic data.
+-   This technique allows researchers to uncover emerging trends
+    identifying knowledge gaps in specific domains.
+-   Is useful when analyzing a significant quantity of documents.
+-   It offers three types of analysis: performance analysis, science
+    mapping, and network analysis.
+
+# 5. Bibliometric Analysis II
+
+-   There are also limitations when using this methodology:
+
+    -   Does not identify the purpose of citations.
+
+    -   Heterogeneity in behavior citations among disciplines.
+
+    -   Not all scientific output is published in bibliographic
+        databases.
+
+```{r Loading data, include=FALSE}
+MM <- read_csv(here("Data", "Processed", "M_EU.csv"))
+rownames(MM) <- MM$SR # using SR as row names
+DA <- read_csv(here("Data", "Processed", "desc_analysis.csv"))
+PD1p <- read_csv(here("Data", "Processed", "influ_arti_1p.csv"))
+PD1p[, c(2,4)] <- lapply(PD1p[, c(2,4)], str_to_title)
+PD2p <- read_csv(here("Data", "Processed", "influ_arti_2p.csv"))
+PD3p <- read_csv(here("Data", "Processed", "influ_arti_3p.csv"))
+COpro <- read_csv(here("Data", "Processed", "country_prod.csv"))
+
+
+```
+
+```{r descriptive, include=FALSE}
+
+#kbl(DA)
+
+options(qwraps2_markup = "markdown")
+kable(DA, 
+      caption = "Descriptive Analysis",
+      col.names = c("Description",
+                    "Period 1",
+                    "Period 2",
+                    "Period 3",
+                    "Total")) %>% 
+  kable_styling(latex_options  = "scale_down", font_size = 7, full_width = F) 
+
+
+
+```
+
+# References {.allowframebreaks}
+
+```{r Line charts cite, include=F}
+
+line_cite <- MM %>% group_by(PY) %>% # total citation per year
+  summarise(totc = sum(TC)) %>%  
+  ggplot(aes(x= PY, y= totc)) + 
+  geom_line() + geom_vline(xintercept = c(2007, 2014),
+                           linetype = "dotted",
+                           color = "blue") +
+  labs(title = "Total Citations per Year" ,
+       x ="Years", 
+       y = "Number of Citations") + 
+  theme(text = element_text(size = 15))
+
+line_docs <- MM %>% group_by(PY) %>% # total publications per year
+  summarise(totd = n()) %>%  
+  ggplot(aes(x= PY, y= totd)) + 
+  geom_line() + geom_vline(xintercept = c(2007, 2014),                                         linetype = "dotted", 
+                           color = "blue") +
+  labs(title = "Total Publications per Year" ,
+       x ="Years", 
+       y = "Number of Publications") + 
+  theme(text = element_text(size = 15))
+
+```
+
+```{r panel, include=F}
+grid.arrange(line_docs, line_cite)
+```
+
+```{r Articles, include=F}
+
+
+kable(PD1p, caption = "Most Influential Articles Between 2000-2007",
+      col.names = c("Rank",
+                    "Author",
+                    "Year",
+                    "Article Title",
+                    "Total Citaions")) %>% 
+  kable_styling(latex_options  = "scale_down", 
+                font_size = 6, full_width = F) 
+
+
+```

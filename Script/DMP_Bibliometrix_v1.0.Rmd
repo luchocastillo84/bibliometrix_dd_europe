@@ -68,8 +68,7 @@ stage, the search criteria, the queries, and the formats downloaded are
 the following:
 
 ```{r wos, include=FALSE}
-wos_file <- c("eu_wos_1_500.txt", 
-              "eu_wos_501_1032.txt")
+wos_file <- c("wos_131222_1_740.txt")
 
 WW <- convert2df(here("Data", # processed data frame for bibliometrics
                      "Raw", 
@@ -115,7 +114,7 @@ abstracts, and keywords.
 ```{r scopus, include=FALSE}
 SS <- convert2df(here("Data",  # processed data frame for bibliometrics 37 columns
                       "Raw", 
-                      "eu_scopus_1_1786.csv"),
+                      "scopus_131222_1_1047.csv"),
                  dbsource = "scopus", 
                  format = "csv")
 ```
@@ -146,8 +145,9 @@ However, the search can be customized using the Application Programming
 Interface API.
 
 ```{r dim, include=FALSE}
-dim_file <- c("dim_1_1467.csv", 
-              "dim_1468_3108.csv")
+dim_file <- c("dim_131222_1_882cr.csv",
+              "dim_131222_1_1265cr.csv",
+              "dim_131222_1_1551cr.csv")
 
 DD <- convert2df(here("Data", # raw data frame 
                      "Raw", 
@@ -166,7 +166,7 @@ DD <- convert2df(here("Data", # raw data frame
 -   **Region:** Countries in Europe.
 -   **Time Frame:** `r min(DD$PY, na.rm = T)` -
     `r max(DD$PY, na.rm = T)`
--   **Date of Search:** 14.10.2022\
+-   **Date of Search:** 14.10.2022
 -   **Total Documents:** `r nrow(DD)`
 -   **Query:** Not available for graphic user interface.
 -   **Downloaded Data Type:** .csv
@@ -176,6 +176,14 @@ DD <- convert2df(here("Data", # raw data frame
     MB](https://www.dropbox.com/s/te4ykjln8l6gihu/dim_1468_3108.csv?dl=0)
 
 ## 1.2 Data Processing
+
+```{r col_names, include=FALSE}
+ww_col <- ncol(WW)
+ss_col <- ncol(SS)
+dd_col <- ncol(DD)
+mm_col <- ncol(MM)
+
+```
 
 The R programming language environment will be used during the data
 processing stage. After downloading, the raw files (.txt and .csv
@@ -188,18 +196,19 @@ bibliographic data frames, there were differences in column length and
 names, meaning the three platforms used different codebooks for naming
 the variables. For example, the [Web of Science
 codebook](https://www.dropbox.com/scl/fi/2kw4wge5y7prwfn8i6mzb/col_names_wos.xlsx?dl=0&rlkey=panwseiwrktiut611n6cpu04m)
-contained 73 variables, the [Scopus
+contained `r ww_col` variables, the [Scopus
 codebook](https://www.dropbox.com/scl/fi/4ochrul4cu5d0v4xsgrdb/col_names_scopus.xlsx?dl=0&rlkey=milgv2adjegonkom45yfunxeb)
-37 variables, and the [Dimensions
+`r ss_col` variables, and the [Dimensions
 codebook](https://www.dropbox.com/scl/fi/0t01j093rwtsqxozna9dj/col_names_dim.xlsx?dl=0&rlkey=o87k0k0ddy3cy2ga0ugyy0u4k)
-30 variables. To solve this problem, first, we followed the [Web of
-Science Core Collection
+`r dd_col` variables. To solve this problem, first, we followed the [Web
+of Science Core Collection
 codebook](https://support.clarivate.com/ScientificandAcademicResearch/s/article/Web-of-Science-Core-Collection-List-of-field-tags-in-output?language=en_US)
 to homogenize the variable's names. Second, the [bibliometrix
 manual](https://www.bibliometrix.org/vignettes/Data-Importing-and-Converting.html)
 suggests selecting the main variables to conduct a bibliometric
-analysis. As a result, the final bibliographic data frame contains 29
-variables ([see
+analysis. As a result, the final bibliographic [data
+frame](https://www.dropbox.com/s/w6y29syjhqs2e88/M_EU.csv?dl=0) contains
+`r mm_col` variables ([see
 codebook](https://www.dropbox.com/scl/fi/ls7et6b55epo5g5t5ecmk/colnames_M.xlsx?dl=0&rlkey=j0we18gy90mnnlfawnp00jlxq)).
 
 This
@@ -229,7 +238,6 @@ This research project does not contain any sensible data; thus,
 throughout the project duration, data will be stored on the
 collaborative workspace R-Studio, GitHub, and Dropbox.
 
-
 ## 4. Responsibilities and resources
 
 This bibliometric study is the initial part of a research agenda
@@ -237,41 +245,34 @@ proposed by the principal researcher as academic work, which will be
 presented at the end of his doctoral studies. The principal investigator
 will collect, analyze, present, and write the study results in a
 scientific article format. In addition, this project will be oriented
-and guided by the supervisor and the co-supervisor. 
+and guided by the supervisor and the co-supervisor.
 
 ### Principal Investigator and author of the DMP:
 
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
-
-Luis Carlos Castillo-Tellez 
+Luis Carlos Castillo-Tellez
 
 University of Urbino
 
-l.castillotellez@campus.uniurb.it
+[l.castillotellez\@campus.uniurb.it](mailto:l.castillotellez@campus.uniurb.it){.email}
 
 [ORCID](https://orcid.org/my-orcid?orcid=0000-0003-2041-4596)
 
-
 ### Supervisor:
-
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
 
 Francesco Vidoli
 
 University of Urbino
 
-francesco.vidoli@uniurb.it
+[francesco.vidoli\@uniurb.it](mailto:francesco.vidoli@uniurb.it){.email}
 
 [ORCID](https://orcid.org/0000-0003-4125-9337)
 
 ### Co-Supervisor:
 
-\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
-
 Michael Rochlitz
 
 University of Bremen
 
-michael.rochlitz@uni-bremen.de
+[michael.rochlitz\@uni-bremen.de](mailto:michael.rochlitz@uni-bremen.de){.email}
 
 [ORCID](https://orcid.org/0000-0001-8652-8874)

@@ -1,10 +1,10 @@
 Details,Period.1,Period.2,Period.3,Total
-Timespan,2000 - 2007,2008 - 2014,2015 - 2021,2000 - 2021
-Journals,148,346,553,929
-Annual growth rate %,88.32,3.72,17.76,29.82
-Average citations per doc,33.68,20.31,11.9,17.8
-Total published documents,285,581,1014,1880
-Articles,193,330,775,1298
-Book chapters,7,63,37,107
-Porceeding papers,35,76,114,225
-Conference papers,50,112,88,250
+Timespan,2000 - 2007,2008 - 2014,2015 - 2021,2000 - 2023
+Journals,113,247,377,642
+Annual growth rate %,84.22,2.01,17.87,0
+Average citations per doc,32.11,22.33,13.93,19.64
+Total published documents,237,498,747,1483
+Articles,173,353,611,1138
+Book chapters,5,30,15,50
+Porceeding papers,30,57,75,162
+Conference papers,29,58,46,133

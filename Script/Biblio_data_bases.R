@@ -17,12 +17,12 @@ library(naniar)
 library(dimensionsR)
 library(jsonlite)
 library(purrr)
-
+library(readr)
+library(qdap)
 #### Web of Science ####
 
 # Creating a vector with two files downloaded by the Web of Science data base
-wos_file <- c("eu_wos_1_500.txt", 
-              "eu_wos_501_1032.txt")
+wos_file <- c("wos_131222_1_740.txt")
 
 # Converting the data into a data frame readable in the bibliometrix package
 raw_W <- convert2df(here("Data", # raw data frame 
@@ -43,7 +43,7 @@ W <- metaTagExtraction(W,
                        Field = "AU_CO", 
                        sep = ";")
 
-PF<- rep("wos", 1032) # PF means platform to distinguish docs from scopus and dimensions
+PF<- rep("wos", nrow(W)) # PF means platform to distinguish docs from scopus and dimensions
 
 W <- cbind(W, PF) # binding the vector PF to M makes M to lose the attributes for biblioshiny
 
@@ -52,15 +52,13 @@ W <- cbind(W, PF) # binding the vector PF to M makes M to lose the attributes fo
 # http://www.bibliometrix.org/vignettes/Data-Importing-and-Converting.html
 # The reduction was from 73 columns to 23 
 # also check the metaTagExtraction command which allow to extract more columns
-W <- W[ , c(1, 59, 56, 36, 21, 19, 33, 4, 11, 
-            51, 3, 58, 49, 52, 62, 67, 68, 69, 
-            70, 71, 72, 73,20,9,64,66,48,28, 74)]
+W <- W[ , c(col_names_M)]
 
 W$DI <- ifelse(is.na(W$DI), W$BN, W$DI)
 
 colnames(W) # check the column names
 
-vis_miss(W, sort_miss = T) #  visualize missing values 
+vis_miss(W) #  visualize missing values 
 
 W <- W %>% filter(!is.na(CR)) # filters out NA values in the citations references column
 
@@ -83,13 +81,13 @@ W_by_DT <- W %>% # dist contains a summary of documents type DT by unique DOI an
 
 raw_S <- convert2df(here("Data", # raw data frame
                               "Raw", 
-                              "eu_scopus_1_1786.csv"),
+                              "scopus_131222_1_1047.csv"),
                          dbsource = "scopus", 
                          format = "csv")
 
 S <- convert2df(here("Data",  # processed data frame for bibliometrics 37 columns
                       "Raw", 
-                      "eu_scopus_1_1786.csv"),
+                      "scopus_131222_1_1047.csv"),
                  dbsource = "scopus", 
                  format = "csv")
 
@@ -102,29 +100,22 @@ S <- metaTagExtraction(S,
 S <- S %>% mutate("SC" = "", # add research areas (empty column) 
                   "WC" = "", # add WoS categories (empty column)
                   "Z9" = "") %>% # add Total Times Cited Count (empty column) total 42 columns
-           rename("TI" = "TIs", # renaming title according to WoS tags
-                  "ID" = "Indexed.Keywords",# keywords
+           rename("TI" = "TI", # renaming title according to WoS tags
+                  "ID" = "ID",# keywords
                   "PU" = "Publisher", 
                   "BN" = "URL")
 
-PF<- rep("sco", 1786) # PF means platform to distinguish docs from scopus and dimensions 39 columns
+PF<- rep("sco", nrow(S)) # PF means platform to distinguish docs from scopus and dimensions 39 columns
 S <- cbind(S, PF) # binding the vector PF to M makes M to lose the attributes for biblioshiny
 
-S <- S[, c(1, 4, 6, 31, 26, 
-             20, 19, 18, 17, 24, 
-             23, 14, 5, 39, 30, 
-             29, 33, 34, 35, 36, 
-             37, 38, 13, 15, 40, 
-             41, 25, 21,42)] # match tag and number of columns from the Wos 29 columns
+S <- S[, col_names_M] # match tag and number of columns from the Wos 29 columns
 
 S <- S %>% replace_with_na_all(condition = ~. == "") # converting "" into NA within the S
 S <- S %>% filter(!is.na(CR)) # filters out NA values in the citations references column
 S <- S %>% filter(!is.na(AU_CO))
 S <-  S %>% distinct(DI, .keep_all = T) # keeping only the unique docs by DI or DOI
 rownames(S) <- S$SR # using SR as row names
-
-countrydf[which(countrydf$split == "USA"),]
-S <- S[-1316, ]
+vis_miss(S)
 
 S[, c(5, 23)] <- lapply(S[, c(5,23)], tolower) # to lower DT and DI
 
@@ -148,13 +139,16 @@ S_by_DT <- S %>% # dist contains a summary of documents type DT by unique DOI an
             TI = n_distinct(TI)) %>%  # unique titles 
   adorn_totals("row") # total 
 
-
+DIsco <- data.frame(DIsco = paste("OR"," ", "DOI", "(",all_sco$DI,")", sep = ""))
+DIsco[c(1,2)]
+write_delim(DIsco,  here("Data","Processed", "DIsco.txt"), delim = "")
 
 #### Dimensions ####
 # https://cran.r-project.org/web/packages/dimensionsR/vignettes/A_Brief_Example.html
 # Creating a vector with two files downloaded by the Dimensions data base
-dim_file <- c("dim_1_1467.csv", 
-              "dim_1468_3108.csv")
+dim_file <- c("dim_131222_1_882cr.csv",
+              "dim_131222_1_1265cr.csv",
+              "dim_131222_1_1551cr.csv")
 
 # Converting the data into a data frame readable in the bibliometrix package
 raw_D <- convert2df(here("Data", # raw data frame 
@@ -168,6 +162,7 @@ D <- convert2df(here("Data", # raw data frame
                      dim_file), 
                 dbsource = "dimensions", 
                 format = "csv")
+vis_miss(D)
 
 D <- D[, -c(22:24)] # dropping two empty columns AU_CO, AU_UN and AU1_CO
 
@@ -186,7 +181,7 @@ D <-  D %>%
   filter(!is.na(CR) & 
            !is.na(AU_CO))
 
-PF<- rep("dim", 1713)
+PF<- rep("dim", nrow(D))
 D <- cbind(D, PF) # binding the vector PF to M makes M to lose the attributes for biblioshiny
 
 D <-  D[, c(10, 3, 23, 24, 17, 20, 19, 4, 28, 
@@ -241,7 +236,7 @@ tot_countries <- unique(tot_countries) %>% filter(!is.na(V1))
 # write_excel_csv(tot_countries, "country_list.xls") # save in xls the country list
 
 country_code_reg <- read_excel(here("Data", ## load the countries, codes and regions 
-                                    "Processed", 
+                                    "Tags_fields", 
                                     "country_code_region.xlsx"))
 
 ## merging 
@@ -301,13 +296,15 @@ D[, c(5, 23)] <- lapply(D[, c(5,23)], tolower) # to lower DT and DI
 D <- D %>% replace_with_na_all(condition = ~. == "") # converting "" into NA within the D
 D <- D %>% replace_with_na_all(condition = ~. == "NA") # converting "" into NA within the D
 vis_miss(D)
-col_i <- which(colnames(D) %in% c("SO", "C1", "DE", "ID", "RP", "SC")) # get the column indexes
+col_i <- which(colnames(D) %in% c("SO", "C1", "DE", "ID", "RP", "SC", "FU")) # get the column indexes
 D <- D[ , -col_i] # excluding the column indexes from D
 D1_D <- left_join(D, D1_SO, by= "DI", keep= F) # joining the API data with the GUI data
 col_names_M <- colnames(M) # getting the column names of M
 D <- D1_D[, col_names_M] # reorganizing the columns joined in D1_D
 
 D <- metaTagExtraction(D, Field = "SR", sep = ";") # getting the author year journal column
+D <- metaTagExtraction(D, Field = "AU_UN", sep = ";") # getting the author year journal column
+vis_miss(D)
 
 rownames(D) <- D$SR # using SR as row names
 
@@ -351,7 +348,7 @@ M <-  M %>% distinct(TI, .keep_all = T) # keeping only the unique docs by TI tit
 M <-  M %>% distinct(SR, .keep_all = T) # keeping only the unique docs by SR title
 
 
-M <- M %>% arrange(PY) %>% filter(PY != 2022) # excluding 2022
+M <- M %>% arrange(PY) %>% filter(PY >= 2000 & PY< 2022) # excluding 2022
 
 write_csv(M, file = here("Data", 
                          "Processed", 
