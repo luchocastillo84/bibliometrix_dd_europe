@@ -132,10 +132,11 @@ Third, a historiograph is built on direct citations. It draws the intellectual l
 
 -   all other arguments assume the default values
 
-```{r Co-citation network, comment=NA, fig.height=10, fig.width=10}
+```{r Co-citation network, comment=NA, fig.height=8, fig.width=8}
 #NetMatrix <- biblioNetwork(all_isi, analysis = "co-citation", network = "references", sep = ";")
-NetMatrix <- biblioNetwork(m_bdf, analysis = "coupling", network = "authors", sep = ";")
-net=networkPlot(NetMatrix, n = 30, Title = "Co-Citation Network", type = "fruchterman", size.cex=TRUE, size=20, remove.multiple=FALSE, labelsize=1,edgesize = 10, edges.min=5)
+
+NetMatrix <- biblioNetwork(n_2p, analysis = "coupling", network = "references", sep = ";", shortlabel = T)
+net=networkPlot(NetMatrix, n = 30, Title = "Co-Citation Network", type = "fruchterman", size.cex=TRUE, size=20, remove.multiple=FALSE, labelsize=5,edgesize = 10, edges.min=5, label = T)
 ```
 
 Descriptive analysis of Article co-citation network characteristics
@@ -148,8 +149,8 @@ summary(netstat,k=10)
 ## Journal (Source) co-citation analysis
 
 ```{r Co-citation source network, comment=NA, fig.height=10, fig.width=10}
-M=metaTagExtraction(M,"CR_SO",sep=";")
-#NetMatrix <- biblioNetwork(M, analysis = "co-citation", network = "sources", sep = ";")
+# M=metaTagExtraction(M,"CR_SO",sep=";")
+NetMatrix <- biblioNetwork(N, analysis = "co-citation", network = "sources", sep = ";")
 net=networkPlot(NetMatrix, n = 30, Title = "Co-Citation Network", type = "auto", size.cex=TRUE, size=10, remove.multiple=FALSE, labelsize=1,edgesize = 10, edges.min=5)
 ```
 
@@ -213,8 +214,8 @@ Bibliometrix is able to analyze keywords, but also the terms in the articles' ti
 -   all other arguments assume the default values
 
 ```{r Keyword co-occurrences, comment=NA, fig.height=10, fig.width=10}
-NetMatrix <- biblioNetwork(M, analysis = "co-occurrences", network = "keywords", sep = ";")
-net=networkPlot(NetMatrix, normalize="association", n = 50, Title = "Keyword Co-occurrences", type = "fruchterman", size.cex=TRUE, size=20, remove.multiple=F, edgesize = 10, labelsize=5,label.cex=TRUE,label.n=30,edges.min=2)
+NetMatrix <- biblioNetwork(N, analysis = "coupling", network = "authors", sep = ";")
+net=networkPlot(NetMatrix, normalize="association", n = 50, Title = "Keyword Co-occurrences", type = "fruchterman", size.cex=TRUE, size=20, remove.multiple=F, edgesize = 10, labelsize=5,label.cex=TRUE,label.n=30,edges.min=2, label = T)
 ```
 
 Descriptive analysis of keyword co-occurrences network characteristics
@@ -283,7 +284,7 @@ summary(netstat,k=15)
 ## Edu collaboration network
 
 ```{r, Edu collaboration network, fig.height=10, fig.width=10}
-NetMatrix <- biblioNetwork(M, analysis = "collaboration",  network = "universities", sep = ";")
+NetMatrix <- biblioNetwork(N, analysis = "collaboration",  network = "universities", sep = ";")
 net=networkPlot(NetMatrix,  n = 50, Title = "Edu collaboration",type = "auto", size=4,size.cex=F,edgesize = 3,labelsize=1)
 ```
 

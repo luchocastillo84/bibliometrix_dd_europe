@@ -21,6 +21,7 @@ library(rbibutils)
 library(rscopus)
 library(readxl)
 library(naniar)
+library(Matrix)
 biblioshiny()
 
 # loading the data from wos using \t tab as separator
@@ -682,4 +683,447 @@ CRsco <- CRsco %>% filter(!grepl("^[(0-9]", CRsco$ref))
 out <- which(grepl("^\\([0-9]{4}\\)[^ ]", CRsco$AU))
 
 
+
+df <- data.frame(col1= c("luisct, duvan, felipe", "carlos df, carolina t", 
+                         "andresac, martu a", "castillo lc", 
+                         "david ce", "john ct"),
+                 col2=c(1, 1, 2, 2, 3, 3))
+
+df1 <- data.frame(col1= c("luisct, duvan, felipe; carlos df, carolina t", 
+                         "andresac, martu a; castillo lc", 
+                         "david ce; john ct"),
+                 col2=c(1, 2, 3))
+
+
+df <- df %>% 
+  separate(col1, into = c("col1_1", "col1_2"), sep = ", ", remove = TRUE)
+
+
+df1 <- data.frame(col1=c("luis c", "carlos d", 
+                        "andres a", "castillo l", "david c", "john c"),
+                 col2=c(1, 1, 2, 2, 3, 3))
+
+nchar <- rep(NA, nrow(df))
+
+for (i in 1:nrow(df)) {
+  nchar[i] <- tail(unlist(gregexpr(" ", df$col1[i])), 1) + 1
+}
+
+
+df$col1 <- substr(df$col1, start = 1, stop = nchar)
+
+
+M$CR <- trim.leading(trimES(gsub("\\[,||\\[||\\]|| \\.\\. || \\. ","",M$CR)))
+
+string <- "CHANG BL"
+word(string,1)
+
+string <- "Luis Carlos Perea"
+nchar <-   tail(unlist(gregexpr(" ", string)), 1) +1
+substring <- substr(string, start = 1, stop = nchar)
+
+nchar <- rep(NA, nrow(df))
+
+for (i in 1:nrow(df)) {
+  nchar[i] <- tail(unlist(gregexpr(" ", df$col1[i])), 1) + 1
+}
+
+for (i in 1:nrow(df)) {
+  # Check if the value in the first column of the current row is equal to the value in the second column of the previous row
+  if ( nchar[i] == 0) {
+    # If it is, assign the value in the first column of the current row to a variable
+    df$col1 <- df$col1
+  } else {
+    # If it is not, call the function and assign the result to a variable
+    df$col1 <- substr(df[i, 1], start = 1, stop = nchar)
+    }
+  # Do something with the value of x here
+  # For example, you could print it or assign it to a new column in the data frame
+  print(x)
+}
+
+df$col1 <- ifelse(nchar == 0, df$col1, substr(df$col1, start = 1, stop = nchar))
+
+
+short <- CRsplit_dim[short_rows_d,]
+df$col1[c(1,3)] <- "duvan T G"
+
+topic <-   which(grepl("VAN DIJCK J", CRsco$AU, ignore.case = TRUE))
+
+pattern <- "\\d{4}"  # Regular expression to match four consecutive digits
+matches <- which(grepl(pattern, short$field1))
+
+# Subset the data frame to remove the rows that match the pattern
+short$field1 <- short[-matches ]
+
+
+string <- c(" ADELL, J., CASTAÑEDA, L., TECNOLOGÍAS EMERGENTES, 
+            ¿PEDAGOGÍAS EMERGENTES? (2012) EDUCACIÓN Y TECNOLOGÍA, PP. 13-32. , 
+            HTTPS://DIGITUM.UM.ES/JSPUI/BITSTREAM/10201/29916/1/ADELL_CASTANEDA_EMERGENTES2012.PDF, 
+            HERNÁNDEZ, J., PENNESI, M., SOBRINO, D., VÁZQUEZ, A.")
+# Next, split the vector into a list of individual strings
+strings <- strsplit(string, split = "\\.,")[[1]]
+
+# Use the str_length() function to count the number of characters in each string
+vec <- sapply(strings, str_length)
+
+df <- data.frame(strings = c(" ADELL, J., CASTAÑEDA, L., TECNOLOGÍAS EMERGENTES, ¿PEDAGOGÍAS EMERGENTES? (2012) EDUCACIÓN Y TECNOLOGÍA, PP. 13-32. , HTTPS://DIGITUM.UM.ES/JSPUI/BITSTREAM/10201/29916/1/ADELL_CASTANEDA_EMERGENTES2012.PDF, HERNÁNDEZ, J., PENNESI, M., SOBRINO, D., VÁZQUEZ, A.",
+                             "FOO, B., BAR, C., BAZ, D., QUX, E.",
+                             "HELLO, WORLD!"))
+
+# Use sapply() to apply strsplit() to each element in the 'strings' column
+df$strings_split <- sapply(df$strings, function(x) strsplit(x, split = "\\.,")[[1]])
+
+df$string_lengths <- sapply(df$strings_split, function(x) sapply(x, str_length))
+
+string_lengths <- lapply(df$strings_split, length)
+
+# Create a new column called 'filtered_strings' to store the filtered strings
+df$filtered_strings <- lapply(df$strings_split, function(x) {
+  # Initialize an empty list to store the filtered strings
+  filtered_strings <- list()
+  
+  # Loop through each element in the list
+  for (i in 1:length(x)) {
+    # If the element is shorter than 25 characters, append it to the list of filtered strings
+    if (nchar(x[[i]]) <= 25) {
+      filtered_strings <- c(filtered_strings, x[[i]])
+    } else {
+      # If the element is greater than 25 characters, stop looping and return the list of filtered strings
+      break
+    }
+  }
+  return(filtered_strings)
+})
+
+df$filtered_strings_pasted <- sapply(df$filtered_strings, function(x) paste(x, collapse = "; "))
+
+
+string <- c("ROWELL, L. 2030. CAN THE $100 LAPTOP",
+            ", ARUMUGAM, P., (2023) A SURVEY ON RURAL INTERNET CONNECTIVITY IN INDIA.",
+            "WWW.GOOGLE.COM/LOON, PROJECT LOON ACCESSED ON 12 DEC 2016")
+
+string <- paste0(string, " ")
+
+string <- c("ROWELL, L. 20I7. CAN THE $100 200I",
+            ", ARUMUGAM, P., 202I A SURVEY ON 20I0 INTERNET 20I4 IN INDIA.",
+            "WWW.GOOGLE.COM/LOON, 202I LOON ACCESSED ON 12 DEC 201I")
+
+
+
+string <- str_replace_all(string, " 20I", " 201")
+string <- str_replace_all(string, " 201I", " 2011")
+string <- str_replace_all(string, " 202I", " 2021")
+string <- str_replace_all(string, " 200I", " 2001")
+
+
+str_extract(string, "\\d{4}")
+year <- unlist(str_extract_all(string, "19\\d{2}|20\\d{2}"))
+
+
+data_frame[which(data_frame$column1 == "value1"), 
+           c("column2", 
+             "column3", 
+             "column4")] <- ifelse(data_frame$column1 == "value1",
+                                   "new_value", 
+                                   data_frame[which(data_frame$column1 == "value1"), 
+                                              c("column2", "column3", "column4")])
+
+class(all_sco) <- c("bibliometrixDB", "data.frame")
+WA <- cocMatrix(all_sco, Field = "AU", type = "sparse", sep= ",")
+WCR <- cocMatrix(all_sco, Field = "CR", type = "sparse", sep = ";")
+CRA <- crossprod(WCR, WA)
+NetMatrix <- crossprod(CRA, CRA)
+net= networkPlot(NetMatrix, n = 20, 
+                 Title = "Coupling", 
+                 type = "fruchterman", 
+                 size.cex=TRUE, size=20, 
+                 remove.multiple=T, 
+                 labelsize=1,edgesize = 10, edges.min=5)
+
+(Field %in% c("ID", "DE", "TI", "TI_TM", "AB", "AB_TM"))
+Field <- "CR"
+type <- "sparse"
+binary <- "FALSE"
+short <- "FALSE"
+m <- N[c(131:140), ]
+size<-dim(m)
+rownames(m) <- m$SRDI
+RowNames <- row.names(m)
+m$CR <- as.character(m$CR)
+
+Fi <- strsplit(m[,Field], split = ";")
+# Fi <- (do.call(rbind, Fi))
+TERMS <- data.frame(item = trimws(unlist(Fi)), SR = rep(m$SR,lengths(Fi)))
+
+
+
+TERMS <- TERMS %>% 
+  group_by(.data$SR) %>%
+  summarize(item = paste(.data$item, collapse=";"))
+
+m <- m %>% 
+  left_join(TERMS, by="SR")
+m[,Field] <- m$item
+
+row.names(m) <- RowNames
+
+allField <- unlist(Fi)
+allField <- allField[!is.na(allField)]
+
+
+tabField <- sort(table(allField), decreasing = TRUE)
+uniqueField <- names(tabField)	
+class(tabField)
+
+co_occur_matrix <- table(TERMS$SR,TERMS$item)
+g <- graph.adjacency(co_occur_matrix, mode = "directed", weighted = TRUE)
+
+if (!is.null(n)) {
+  uniqueField <- uniqueField[1:n]
+} else if (isTRUE(short)){
+  uniqueField <- names(tabField[tabField>1])  # remove items with frequency<2
+}
+WF<- Matrix(0,size[1],length(uniqueField))
+
+
+colnames(WF)<-uniqueField
+rownames(WF)<-rownames(m)
+
+for (i in 1:size[1]){
+  if (length(Fi[[i]])>0 & !is.na(Fi[[i]][1])) {
+    #print(i)
+    #if (Field=="CR"){Fi[[i]]=reduceRefs(Fi[[i]])}
+    if (isTRUE(binary)){
+      ## binary counting
+      ind <- uniqueField %in% Fi[[i]]
+      if (sum(ind) > 0){
+        WF[i, ind] <- 1
+      }
+    }
+    else{
+      ## full counting
+      tab=table(Fi[[i]])
+      name <- names(tab)[names(tab) %in% uniqueField]
+      name <- name[nchar(name)>0]
+      if (length(name)>0){
+        WF[i,name] <- tab[name]
+      }
+    }
+  }}
+
+ind <- uniqueField %in% Fi[[i]]
+if (sum(ind) > 0){
+  WF[i, ind] <- 1
+}
+WF <- Matrix(WF)
+
+tab=table(Fi[[i]])
+name <- names(tab)[names(tab) %in% uniqueField]
+name <- name[nchar(name)>0]
+if (length(name)>0){
+  WF[1,name] <- tab[name]
+}
+
+WF <- WF[,!is.na(uniqueField)]
+ind <- which(colnames(WF)=="NA")
+if (length(ind)>0) {WF <- WF[,-ind]}
+
+return(WF)
+
+
+
+
+
+indices <- which(WF > 1, arr.ind = TRUE)
+head(indices)
+
+library(igraph)
+
+co_matrix <- matrix(c(2, 3, 2, 1, 2, 1, 2, 1, 2), nrow = 3)
+sparse_matrix <- Matrix::sparseMatrix(i = c(1, 2, 3, 1, 2, 3, 1, 2, 3),
+                                      j = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+                                      x = co_matrix,
+                                      dims = c(3, 3))
+
+
+WAm <- cocMatrix(N, Field = "AU", type = "sparse", sep = ";")
+WCRm <- cocMatrix(N, Field = "CR", type = "sparse", sep = ";")
+CRAm <- crossprod(WCRm, WAm)
+NetMatrixm <- crossprod(CRAm, CRAm)
+
+
+
+net=networkPlot(NetMatrix, n = 30, Title = "Co-Citation Network", 
+                type = "fruchterman", size.cex=TRUE, size=20, remove.multiple=FALSE, 
+                labelsize=1, edgesize = 10, edges.min=5)
+
+
+df <- data.frame(ID = c(1,2,3, 4, 5, 6, 7, 8, 9, 10), 
+                 V1 = c("England", "England", "England", 
+                        "France", "France","France",
+                        "Germany", "Germany", "Germany",
+                        "Austria"),
+                 V2 = c("Greece", "Spain", "Portugal", 
+                        "England", "Germany", "Spain",
+                        "Italy", "Greece", "England",
+                        "Poland"))
+
+df1 <- as.data.frame(table(df))
+df2 <- subset(df1, Freq>0)
+net_a <- graph_from_data_frame(df2,directed = F, vertices = NULL)
+E(net_a)$weight <- E(net_a)$Freq
+net_a
+
+# igraph summary
+gsize(net_a)
+gorder(net_a)
+
+# Node list
+
+V(net_a)
+
+# Edgelist
+
+E(net_a)
+
+# Adjancency matrix
+net_a[c(1:10), c(1:10)]
+
+
+
+a <- as.matrix(network(df[-1],directed = FALSE))
+a
+i <- as.matrix(as_adj(graph_from_data_frame(df[-1], FALSE)))
+b <- table(df[, -1])
+
+netm <- crossprod(b, b)
+class(a) <- c("bibliometrixDB", "data.frame")
+set.seed(1001)
+
+colnames(net_a)<-df$V2
+rownames(net_a)<-df$V2
+
+plot(net_a, vertex.size=7, vertex.label=NA, vertex.color="orange", edge.size=15, edge.color="blue", edge.arrow.size=0.4)
+title(main="Graph layout nicely", cex.main=0.8)
+
+
+net=networkPlot(net_a, n = 5, Title = "Co-Citation Network", 
+                type = "fruchterman", size.cex=TRUE, size=20, remove.multiple=FALSE, 
+                labelsize=1, edgesize = 10, edges.min=5)
+
+
+dfc <- data.frame(ID = c(1,2,3, 4), 
+                  SR = c("England, 2015", "France, 2012", "Germany, 2002",
+                         "Austria, 2006"),
+                  CR = c("Greece; Spain; Portugal", 
+                         "England; Germany; Spain",
+                         "Italy; Greece; England",
+                         "Poland"))
+
+Field <- "CR"
+type <- "sparse"
+binary <- "TRUE"
+short <- "FALSE"
+p <- dfc
+size<-dim(p)
+rownames(p) <- p$SR
+RowNames <- row.names(p$SR)
+p$CR <- as.character(p$CR)
+
+Fi <- strsplit(p[,Field], split = ";")
+# Fi <- (do.call(rbind, Fi))
+TERMS <- data.frame(item = trimws(unlist(Fi)), SR = rep(p$SR,lengths(Fi)))
+
+
+
+TERMS <- TERMS %>% 
+  group_by(.data$SR) %>%
+  summarize(item = paste(.data$item, collapse=";"))
+
+p <- p %>% 
+  left_join(TERMS, by="SR")
+p[,Field] <- p$item
+
+row.names(p) <- RowNames
+
+allField <- unlist(Fi)
+allField <- allField[!is.na(allField)]
+
+
+tabField <- sort(table(allField), decreasing = TRUE)
+uniqueField <- names(tabField)	
+class(tabField)
+
+co_occur_matrix <- table(TERMS$SR,TERMS$item)
+g <- graph.adjacency(co_occur_matrix, mode = "directed", weighted = TRUE)
+
+if (!is.null(n)) {
+  uniqueField <- uniqueField[1:n]
+} else if (isTRUE(short)){
+  uniqueField <- names(tabField[tabField>1])  # remove items with frequency<2
+}
+WF<- Matrix(0,size[1],length(uniqueField))
+
+
+colnames(WF)<-uniqueField
+rownames(WF)<-rownames(p)
+
+for (i in 1:size[1]){
+  if (length(Fi[[i]])>0 & !is.na(Fi[[i]][1])) {
+    #print(i)
+    #if (Field=="CR"){Fi[[i]]=reduceRefs(Fi[[i]])}
+    if (isTRUE(binary)){
+      ## binary counting
+      ind <- uniqueField %in% Fi[[i]]
+      if (sum(ind) > 0){
+        WF[i, ind] <- 1
+      }
+    }
+    else{
+      ## full counting
+      tab=table(Fi[[i]])
+      name <- names(tab)[names(tab) %in% uniqueField]
+      name <- name[nchar(name)>0]
+      if (length(name)>0){
+        WF[i,name] <- tab[name]
+      }
+    }
+  }}
+
+ind <- uniqueField %in% Fi[[i]]
+if (sum(ind) > 0){
+  WF[i, ind] <- 1
+}
+WF <- Matrix(WF)
+
+tab=table(Fi[[i]])
+name <- names(tab)[names(tab) %in% uniqueField]
+name <- name[nchar(name)>0]
+if (length(name)>0){
+  WF[1,name] <- tab[name]
+}
+
+WF <- WF[,!is.na(uniqueField)]
+ind <- which(colnames(WF)=="NA")
+if (length(ind)>0) {WF <- WF[,-ind]}
+
+return(WF)
+
+class(dfc) <- c("bibliometrixDB", "data.frame")
+net_p <- crossprod(WF,WF)
+net_p <- cocMatrix(n_1p, Field = "AU", type = "sparse", sep = ";", binary = T)
+
+net=networkPlot(net_p, n = 30, Title = "Co-Citation Network", 
+                type = "fruchterman", size.cex=TRUE, size=20, remove.multiple=FALSE, 
+                labelsize=1, edgesize = 10, edges.min=5)
+
+net=networkPlot(net_p, n = 30, Title = "Co-Citation Network", 
+                type = "fruchterman", size.cex=TRUE, size=20, 
+                remove.multiple=FALSE, labelsize=2,edgesize = 10, edges.min=5)
+
+
+
+test <- labelShort(n_1p, db= "isi")
+LABEL <- removeDuplicatedlabels(N$LABEL)
 

@@ -237,14 +237,14 @@ count_prod <- full_join(auco_1df,
 
 
 
-topic <-   which(grepl("", CRsco$ref, ignore.case = TRUE))
-m_cited <- head(order(-M$TC), 10)
+topic <-   which(grepl("corporate|firm|business", N$TI, ignore.case = TRUE))
+m_cited <- head(order(-N$TC), 10)
 # 10  219 1173 1355 1580 1714 corporate 
 # 556  618 1024 1044 1120 1176 1231 1361 1414 1487 1573 1597 1648 1723 1860 business
 # 308  379r  556  593  999 1006 1189 1573 1580 1600 1679 1874 firms
 
 i <- topic
-toJSON(all_isi[i, c(2, 1, 3, 17, 14,25, 13, 6, 8, 12, 22, 29, 23)], pretty= T)
+toJSON(N[i, c(2, 1, 3, 17, 14,25, 13, 6, 8, 12, 22, 29, 23)], pretty= T)
 toJSON(M[i, c(11)], pretty= T)
 # delete this doi 10.1145/1242572.1242583
 # 10.1108/073788309

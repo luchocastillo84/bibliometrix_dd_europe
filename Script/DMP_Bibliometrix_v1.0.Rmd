@@ -97,7 +97,7 @@ content.
 -   **Date of Search:** 10.10.2022
 -   **Total Documents:** `r nrow(WW)`
 -   **Query:** [Go to Web of Science Query
-    Link](https://www.webofscience.com/wos/woscc/summary/4811505d-f079-4eb4-85b5-0efb1bba0b49-53a1a627/relevance/1)
+    Link](https://www.webofscience.com/wos/woscc/summary/a10a1d1b-bcfa-4494-9ed0-75228e2f40e1-6839a671/date-descending/1)
 -   **Downloaded Data Type:** .txt
 -   **Download data and Size:** [eu_wos_1\_500.txt 2.5
     MB](https://www.dropbox.com/s/qlkh336108iy0nj/eu_wos_1_500.txt?dl=0)

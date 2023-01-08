@@ -36,7 +36,7 @@ res <- dsApiRequest(token = token, query = query, limit = 0)
 
 res$total_count
 
-D_api <- dsApiRequest(token = token, query = query, step = 500, limit = res$total_count)
+D_api <- dsApiRequest(token = token, query = query, step = 700, limit = res$total_count)
 
 D1 <- dsApi2df(D_api)
 D[, c(26)] <- lapply(D[, c(26)], tolower)

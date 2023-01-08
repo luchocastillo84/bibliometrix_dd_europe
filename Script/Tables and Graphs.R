@@ -23,7 +23,7 @@ library(purrr)
 MM <- read_csv(here("Data", # reading the bibliographic data
                     "Processed", 
                     "M_EU.csv"))
-
+MM[, c(5, 23)] <- lapply(MM[, c(5,23)], tolower) # to lower DT and DI
 ##### 1.1. Total ####
 Details <- c("Timespan", "Journals", # creating details vector
              "Annual growth rate %", "Average citations per doc", 
@@ -42,6 +42,7 @@ CAGR<-as.numeric(
 sources <- n_distinct(MM$SO) # counts the number of journals in MM
 n_docs <- nrow(MM) # counts the number of published documents in MM
 avg_cite <- round(sum(MM$TC)/nrow(MM), 2) # returns the average citation 
+
 
 arti <- as_vector(  # counting and merging articles with reviewed articles
         nrow(MM[MM$DT=='article', ]) + 
@@ -64,7 +65,7 @@ Total <- c(tot_period, sources, CAGR, # creating a total vector
            avg_cite, n_docs, arti, bchap, 
            procee, confe)
 
-##### 1.2. 2000 to 2007: first period ####
+##### 1.2. 2000 to 2007 first period ####
 
 M_1p <- MM %>% filter(PY <= 2007) # sub-setting the first period
 
@@ -104,9 +105,9 @@ confe1 <- as_vector(
                 CAGR1, avg_cite1, n_docs1, arti1, 
                 bchap1, procee1, confe1 )
 
-##### 1.3. 2008 to 2014: second period ####
+##### 1.3. 2008 to 2015: second period ####
 
-M_2p <- MM %>% filter(PY > 2007 & PY <= 2014) # sub-setting the second period
+M_2p <- MM %>% filter(PY > 2007 & PY <= 2015) # sub-setting the second period
 
 tot_period2 <-paste(min(M_2p$PY, # this returns the second period 
                         na.rm = T) , # studied in the bibliometric
@@ -144,9 +145,9 @@ confe2 <- as_vector(
                 CAGR2, avg_cite2, n_docs2, 
                 arti2, bchap2, procee2, confe2 )
 
-##### 1.4. 2015 to 2021: third period ####
+##### 1.4. 2015 to 2022: third period ####
 
-M_3p <- M %>% filter(PY > 2014 & PY <= 2021) # sub-setting the third period
+M_3p <- MM %>% filter(PY > 2015 & PY <= 2022) # sub-setting the third period
 
 tot_period3 <-paste(min(M_3p$PY, # this returns the second period 
                         na.rm = T) , # studied in the bibliometric

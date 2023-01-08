@@ -22,7 +22,7 @@ library(qdap)
 #### Web of Science ####
 
 # Creating a vector with two files downloaded by the Web of Science data base
-wos_file <- c("wos_131222_1_740.txt")
+wos_file <- c("wos_020123_1_500.txt", "wos_010223_501_1148.txt")
 
 # Converting the data into a data frame readable in the bibliometrix package
 raw_W <- convert2df(here("Data", # raw data frame 
@@ -81,13 +81,13 @@ W_by_DT <- W %>% # dist contains a summary of documents type DT by unique DOI an
 
 raw_S <- convert2df(here("Data", # raw data frame
                               "Raw", 
-                              "scopus_131222_1_1047.csv"),
+                              "scopus_020123_1_1187.csv"),
                          dbsource = "scopus", 
                          format = "csv")
 
 S <- convert2df(here("Data",  # processed data frame for bibliometrics 37 columns
                       "Raw", 
-                      "scopus_131222_1_1047.csv"),
+                      "scopus_020123_1_1187.csv"),
                  dbsource = "scopus", 
                  format = "csv")
 
@@ -148,7 +148,7 @@ write_delim(DIsco,  here("Data","Processed", "DIsco.txt"), delim = "")
 # Creating a vector with two files downloaded by the Dimensions data base
 dim_file <- c("dim_131222_1_882cr.csv",
               "dim_131222_1_1265cr.csv",
-              "dim_131222_1_1551cr.csv")
+              "dim_020123_1_1916cr.csv")
 
 # Converting the data into a data frame readable in the bibliometrix package
 raw_D <- convert2df(here("Data", # raw data frame 
@@ -184,10 +184,12 @@ D <-  D %>%
 PF<- rep("dim", nrow(D))
 D <- cbind(D, PF) # binding the vector PF to M makes M to lose the attributes for biblioshiny
 
-D <-  D[, c(10, 3, 23, 24, 17, 20, 19, 4, 28, 
-            21, 16, 14, 6, 29, 1, 25, 11, 22, 
-            30, 26, 27, 12, 2, 13, 31, 32, 33, 
-            34,35)]
+# D <-  D[, c(10, 3, 23, 24, 17, 20, 19, 4, 28, 
+#             21, 16, 14, 6, 29, 1, 25, 11, 22, 
+#             30, 26, 27, 12, 2, 13, 31, 32, 33, 
+#             34,35)]
+
+D <- D[, col_names_M]
 
 D <- D %>% replace_with_na_all(condition = ~. == "") # converting "" into NA within the D
 vis_miss(D)
@@ -299,7 +301,7 @@ vis_miss(D)
 col_i <- which(colnames(D) %in% c("SO", "C1", "DE", "ID", "RP", "SC", "FU")) # get the column indexes
 D <- D[ , -col_i] # excluding the column indexes from D
 D1_D <- left_join(D, D1_SO, by= "DI", keep= F) # joining the API data with the GUI data
-col_names_M <- colnames(M) # getting the column names of M
+# col_names_M <- colnames(M) # getting the column names of M
 D <- D1_D[, col_names_M] # reorganizing the columns joined in D1_D
 
 D <- metaTagExtraction(D, Field = "SR", sep = ";") # getting the author year journal column
@@ -315,45 +317,110 @@ WD <- rbind(W, DW) # binding WOS and Dimensions
 
 SDW <- anti_join(S, WD, by= c("DI", "TI")) # filtering docs that only appear in SCOPUS and !WOS & DIM
 
+# B is the name of the df that binds WOS, SCO and DIM
+B <-  rbind(WD, SDW) # binding the three data bases into B
+B <- B %>% replace_with_na_all(condition = ~. == "") # converting "" into NA within the D
+B <- B %>% replace_with_na_all(condition = ~. == "NA") # converting "" into NA within the D
+vis_miss(B)
 
-M <-  rbind(WD, SDW) # binding the three data bases
-M <- M %>% replace_with_na_all(condition = ~. == "") # converting "" into NA within the D
-M <- M %>% replace_with_na_all(condition = ~. == "NA") # converting "" into NA within the D
-vis_miss(M)
-
-M$AU_CO <- str_replace_all(M$AU_CO, 
+B$AU_CO <- str_replace_all(B$AU_CO, 
                            "UNITED STATES", 
                            "USA") # changing UNITED STATES with USA to avoid double counting
 
-M$AU <- str_replace_all(M$AU, 
+B$AU <- str_replace_all(B$AU, 
                         "VAN DIJK JAGM", 
                         "VAN DIJK J") # changing VAN DIJK JAGM with VAN DIJK J to avoid double counting
 
-M$AU_UN <- str_replace_all(M$AU_UN,
+B$AU_UN <- str_replace_all(B$AU_UN,
                            "UNIVERSITY", 
                            "UNIV") # changing UNIVERSITY with UNIV to avoid double counting
 
-M$AU_UN <- str_replace_all(M$AU_UN,
+B$AU_UN <- str_replace_all(B$AU_UN,
                            "UNIV OF", 
                            "UNIV")
 
-M$AU_UN <- str_replace_all(M$AU_UN,
+B$AU_UN <- str_replace_all(B$AU_UN,
                            "MILANO", 
                            "MILAN")
 
-M[, c(5, 23)] <- lapply(M[, c(5,23)], tolower)
+B[, c(5, 23)] <- lapply(B[, c(5,23)], tolower)
 
-M <-  M %>% distinct(DI, .keep_all = T) # keeping only the unique docs by DOI
-M <-  M %>% distinct(TI, .keep_all = T) # keeping only the unique docs by TI title
-M <-  M %>% distinct(SR, .keep_all = T) # keeping only the unique docs by SR title
+B <-  B %>% distinct(DI, .keep_all = T) # keeping only the unique docs by DOI
+B <-  B %>% distinct(TI, .keep_all = T) # keeping only the unique docs by TI title
+B <-  B %>% distinct(SR, .keep_all = T) # keeping only the unique docs by SR title
 
 
-M <- M %>% arrange(PY) %>% filter(PY >= 2000 & PY< 2022) # excluding 2022
+B <- B %>% arrange(PY) %>% filter(PY >= 2000 & PY< 2023) # excluding 2022
+
+
+indices <- which(apply(B[, c("TI", "DE")], 1, # filters only TI, DE with the pattern
+                       function(x) any(grepl("digital divide|digital gap|digital inequalit", 
+                                             x, ignore.case = TRUE)))) # I excluded ID 
+
+B <- B[indices, ]
+
+write_csv(B, file = here("Data", 
+                         "Processed", 
+                         "B_EU.csv")) # writing as CSV to make readable in biblioshiny
+
+################################################################################
+####################  BINDING THE CLEAN CR FROM WOS, SCO AND DIM ###############
+################################################################################
+
+M <- rbind(all_isi, all_sco, all_dim)
+
+M <- M %>% replace_with_na_all(condition = ~. == "") # converting "" into NA within the df
+M <- M %>% replace_with_na_all(condition = ~. == "NA") # converting "" into NA within the df
+vis_miss(M)
+
+M <- M %>% filter(!is.na(CR)) # filter out NA values in the CR column
+
+M_AU<- # adds a SO column
+ trimws(unlist(lapply(strsplit(M$AU,
+                               ';', # separated by comma
+                               fixed = TRUE),
+                      '[', 1))) # extract the third string in the array
+
+M$DI <- tolower(M$DI)
+M_doi <- paste("DOI", M$DI)
+
+
+M$SRDI <- paste(M_AU, M$PY, ifelse(M_doi == "DOI NA", "", M_doi), sep = ", ")
+M$SRDI <- trimws(M$SRDI, whitespace = ", ")
+
+
+rownames(M) <- M$SRDI # using SR as row names
 
 write_csv(M, file = here("Data", 
                          "Processed", 
                          "M_EU.csv")) # writing as CSV to make readable in biblioshiny
-vis_miss(M)
+
+N <- M
+
+N$DB <- "ISI"
+N$SR <- N$SRDI
+rownames(N) <- N$SRDI # using SR as row names
+
+write_csv(N, file = here("Data", 
+                         "Processed", 
+                         "N_EU.csv")) # writing as CSV to make readable in biblioshiny
+class(N) <- c("bibliometrixDB", "data.frame")
+save(N, file = "N_EU.rda")
+
+N$LABEL <- paste(N_AU, N$PY, sep = ", ")
+N$LABEL <- LABEL
+n_1p <- N %>% filter(PY <= 2008)
+n_1p = n_1p[order(n_1p$PY), ]
+save(n_1p, file = "n1_EU.rda")
+
+n_2p <- N %>% filter(PY > 2008 & PY <= 2015) # sub-setting the second period
+n_2p = n_2p[order(n_2p$PY), ]
+save(n_2p, file = "n2_EU.rda")
+
+
+n_3p <- N %>% filter(PY > 2016 & PY <= 2022) # sub-setting the second period
+save(n_3p, file = "n3_EU.rda")
+
 
 
 
